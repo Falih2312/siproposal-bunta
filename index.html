@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SiProposal — Pengajuan Usulan Pelimpahan Kewenangan ke Camat Bunta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            navy: {
+              50: '#f0f4f8',
+              100: '#d9e2ec',
+              600: '#1e3a5f',
+              700: '#162d4c',
+              800: '#102138',
+              900: '#0a1626'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #print-area, #print-area * { visibility: visible !important; }
+      #print-area {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 12mm 16mm !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-navy-800 text-white shadow-sm sticky top-0 z-30 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap items-center justify-between gap-3 py-3.5">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-10 h-10 rounded-lg bg-amber-500/20 border border-amber-400/40 flex items-center justify-center shrink-0">
+            <i data-lucide="landmark" class="w-5 h-5 text-amber-300"></i>
+          </div>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-sm sm:text-base font-bold tracking-tight truncate">SiProposal — Usulan Pelimpahan Kewenangan ke Camat</h1>
+              <span id="db-status-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-700 text-slate-200">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                Menghubungkan DB...
+              </span>
+            </div>
+            <p class="text-xs text-slate-300 truncate">Perbup Banggai No. 1 Tahun 2026 • Kecamatan Bunta</p>
+          </div>
+        </div>
+
+        <nav class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full" aria-label="Navigasi Utama">
+          <button type="button" data-tab="dashboard" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap bg-white/15 text-white">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Dasbor & Pelacakan</span>
+          </button>
+          <button type="button" data-tab="form" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
+            <i data-lucide="file-plus-2" class="w-4 h-4"></i>
+            <span id="form-tab-label">Ajukan Proposal</span>
+          </button>
+          <button type="button" data-tab="regulasi" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
+            <i data-lucide="book-open-check" class="w-4 h-4"></i>
+            <span>Katalog 22 Urusan</span>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
+
+    <!-- Banner Info -->
+    <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-blue-900">
+      <div class="flex items-start sm:items-center gap-2.5">
+        <i data-lucide="info" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5 sm:mt-0"></i>
+        <span>
+          Mengacu pada <strong>Perbup Banggai No. 1 Tahun 2026</strong> (22 Urusan Pemerintahan yang dilimpahkan ke Camat, Pasal 15 tentang usulan prioritas, serta Pasal 17–18 tentang Swakelola & Kelompok Masyarakat).
+        </span>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="btn-sync-db" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-navy-700 border border-blue-200 text-xs font-medium transition-colors">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          Muat Ulang DB
+        </button>
+        <button type="button" id="btn-new-shortcut" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy-700 hover:bg-navy-800 text-white text-xs font-medium transition-colors">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+          Ajukan Proposal Baru
+        </button>
+      </div>
+    </div>
+
+    <!-- TAB 1: DASHBOARD & PELACAKAN -->
+    <section id="tab-dashboard" class="space-y-6">
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Proposal Masuk</span>
+            <span class="p-2 rounded-lg bg-slate-100 text-slate-600"><i data-lucide="folder-kanban" class="w-4 h-4"></i></span>
+          </div>
+          <p id="kpi-total" class="text-2xl font-bold text-slate-900 mt-2">0</p>
+          <p class="text-xs text-slate-500 mt-1">Dari kelompok, desa/kelurahan & lembaga</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Proses Telaah Camat</span>
+            <span class="p-2 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="clock-3" class="w-4 h-4"></i></span>
+          </div>
+          <p id="kpi-proses" class="text-2xl font-bold text-amber-700 mt-2">0</p>
+          <p class="text-xs text-slate-500 mt-1">Diajukan & Disposisi Seksi</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Disetujui / Prioritas</span>
+            <span class="p-2 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="badge-check" class="w-4 h-4"></i></span>
+          </div>
+          <p id="kpi-disetujui" class="text-2xl font-bold text-emerald-700 mt-2">0</p>
+          <p class="text-xs text-slate-500 mt-1">Masuk skala prioritas Kecamatan</p>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-medium text-slate-500 uppercase tracking-wider">Total Nilai RAB Usulan</span>
+            <span class="p-2 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="wallet" class="w-4 h-4"></i></span>
+          </div>
+          <p id="kpi-anggaran" class="text-xl sm:text-2xl font-bold text-navy-700 mt-2">Rp 0</p>
+          <p class="text-xs text-slate-500 mt-1">Akumulasi estimasi biaya proposal</p>
+        </div>
+      </div>
+
+      <!-- Charts Row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-800">Distribusi Status Proposal</h2>
+            <span class="text-xs text-slate-500">Real-time</span>
+          </div>
+          <div class="relative h-64">
+            <canvas id="chart-status"></canvas>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-sm font-semibold text-slate-800">Proporsi Jenis Pengusul</h2>
+            <span class="text-xs text-slate-500">Kelompok / Lembaga / Desa</span>
+          </div>
+          <div class="relative h-64">
+            <canvas id="chart-kategori"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter & Data Controls -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2.5 flex-1">
+            <div class="relative flex-1 min-w-[200px]">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input id="search-input" type="text" placeholder="Cari kelompok, desa, urusan Perbup, atau judul proposal..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600 focus:border-navy-600" />
+            </div>
+            <select id="filter-status" class="px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+              <option value="">Semua Status</option>
+              <option value="Draft">Draft</option>
+              <option value="Diajukan">Diajukan</option>
+              <option value="Disposisi Seksi">Disposisi Seksi</option>
+              <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+              <option value="Disetujui">Disetujui</option>
+            </select>
+            <select id="filter-kategori" class="px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+              <option value="">Semua Pengusul</option>
+              <option value="Kelompok Masyarakat">Kelompok Masyarakat</option>
+              <option value="Kelompok Tani / Nelayan / UMKM">Kelompok Tani / Nelayan / UMKM</option>
+              <option value="Ormas / Pemuda">Ormas / Pemuda</option>
+              <option value="Desa / Kelurahan">Desa / Kelurahan</option>
+              <option value="Lembaga Keagamaan / Pendidikan / Lainnya">Lembaga Keagamaan / Pendidikan / Lainnya</option>
+            </select>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button type="button" id="btn-export-csv" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+              Ekspor CSV
+            </button>
+            <button type="button" id="btn-export-json" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              Ekspor JSON
+            </button>
+            <label class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer">
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              Impor JSON
+              <input id="input-import-json" type="file" accept=".json,application/json" class="hidden" />
+            </label>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                <th class="py-3 px-4">No. Surat & Tanggal</th>
+                <th class="py-3 px-4">Pengusul & Wilayah</th>
+                <th class="py-3 px-4">Judul & Bidang Urusan (Perbup 1/2026)</th>
+                <th class="py-3 px-4">RAB & Berkas</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="proposal-table-body" class="divide-y divide-slate-200 text-sm">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+        <div id="empty-state" class="hidden p-10 text-center space-y-3">
+          <div class="w-12 h-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+            <i data-lucide="file-search" class="w-6 h-6"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-slate-700">Belum ada proposal yang ditampilkan.</p>
+            <p class="text-xs text-slate-500 mt-1">Ajukan proposal baru atau muat 3 contoh data awal ke database.</p>
+          </div>
+          <button type="button" id="btn-seed-samples" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-navy-50 hover:bg-navy-100 text-navy-700 text-xs font-semibold border border-navy-200 transition-colors">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i>
+            Muat 3 Contoh Proposal ke Database
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: FORM PENGAJUAN PROPOSAL -->
+    <section id="tab-form" class="hidden">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 id="form-heading" class="text-base sm:text-lg font-bold text-slate-900">Formulir Pengajuan Proposal ke Camat Bunta</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Sesuai Lampiran 22 Urusan Pemerintahan & Pasal 17–18 Perbup Banggai No. 1 Tahun 2026.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-medium text-slate-600">Kelengkapan Berkas:</span>
+            <span id="lampiran-badge" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">0/5 Dokumen</span>
+          </div>
+        </div>
+
+        <form id="proposal-form" class="p-6 space-y-8" novalidate>
+          <input type="hidden" id="field-id" />
+
+          <!-- Bagian 1 -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+              <span class="w-6 h-6 rounded-full bg-navy-700 text-white text-xs font-bold flex items-center justify-center">1</span>
+              <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Identitas Kelompok / Pihak Pengusul</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="field-jenis-pengusul" class="block text-xs font-semibold text-slate-700 mb-1">Jenis Pengusul <span class="text-red-500">*</span></label>
+                <select id="field-jenis-pengusul" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+                  <option value="Kelompok Masyarakat">Kelompok Masyarakat (Pokmas / LPM / KUBE / dll.)</option>
+                  <option value="Kelompok Tani / Nelayan / UMKM">Kelompok Tani / Nelayan / Pelaku Usaha Mikro (UMKM)</option>
+                  <option value="Ormas / Pemuda">Organisasi Kemasyarakatan / Karang Taruna / Pramuka</option>
+                  <option value="Desa / Kelurahan">Pemerintah Desa / Kelurahan</option>
+                  <option value="Lembaga Keagamaan / Pendidikan / Lainnya">Lembaga Keagamaan / Pendidikan / Pihak Lainnya</option>
+                </select>
+              </div>
+              <div>
+                <label for="field-nama-pengusul" class="block text-xs font-semibold text-slate-700 mb-1">Nama Kelompok / Organisasi / Lembaga <span class="text-red-500">*</span></label>
+                <input id="field-nama-pengusul" type="text" required placeholder="Contoh: Kelompok Nelayan Bahari / Poktan Sumber Makmur" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-wilayah" class="block text-xs font-semibold text-slate-700 mb-1">Desa / Kelurahan Asal (Kec. Bunta) <span class="text-red-500">*</span></label>
+                <input id="field-wilayah" type="text" required placeholder="Contoh: Desa Pongian / Kelurahan Bunta I, Kec. Bunta" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-tujuan-camat" class="block text-xs font-semibold text-slate-700 mb-1">Ditujukan Kepada <span class="text-red-500">*</span></label>
+                <input id="field-tujuan-camat" type="text" required value="Camat Bunta (Kabupaten Banggai)" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-nomor" class="block text-xs font-semibold text-slate-700 mb-1">Nomor Surat Permohonan <span class="text-red-500">*</span></label>
+                <input id="field-nomor" type="text" required placeholder="Contoh: 012/POKMAS/XI/2026" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-tanggal" class="block text-xs font-semibold text-slate-700 mb-1">Tanggal Pengajuan <span class="text-red-500">*</span></label>
+                <input id="field-tanggal" type="date" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-ketua" class="block text-xs font-semibold text-slate-700 mb-1">Nama Ketua / Penanggung Jawab <span class="text-red-500">*</span></label>
+                <input id="field-ketua" type="text" required placeholder="Nama lengkap penandatangan proposal" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-kontak" class="block text-xs font-semibold text-slate-700 mb-1">No. HP / WhatsApp Narahubung</label>
+                <input id="field-kontak" type="text" placeholder="Contoh: 0852-xxxx-xxxx" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Bagian 2 -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+              <span class="w-6 h-6 rounded-full bg-navy-700 text-white text-xs font-bold flex items-center justify-center">2</span>
+              <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Bidang Urusan & Rincian Kegiatan (Lampiran Perbup No. 1/2026)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="field-urusan" class="block text-xs font-semibold text-slate-700 mb-1">Pilih Bidang Urusan (1–22 Perbup 1/2026) <span class="text-red-500">*</span></label>
+                <select id="field-urusan" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+                  <!-- Populated by JS -->
+                </select>
+              </div>
+              <div>
+                <label for="field-subkegiatan" class="block text-xs font-semibold text-slate-700 mb-1">Rincian Kegiatan / Kewenangan Sesuai Lampiran <span class="text-red-500">*</span></label>
+                <select id="field-subkegiatan" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label for="field-judul" class="block text-xs font-semibold text-slate-700 mb-1">Judul Proposal Spesifik <span class="text-red-500">*</span></label>
+                <input id="field-judul" type="text" required placeholder="Contoh: Proposal Pengadaan Cool Box & Freezer untuk Kelompok Nelayan Skala Mikro Desa Pongian" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-mekanisme" class="block text-xs font-semibold text-slate-700 mb-1">Mekanisme Pelaksanaan (Pasal 17–18) <span class="text-red-500">*</span></label>
+                <select id="field-mekanisme" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+                  <option value="Swakelola Tipe III / IV (Kelompok Masyarakat)">Swakelola Tipe III / IV (Kelompok Masyarakat)</option>
+                  <option value="Pengadaan Penyedia Lokal">Pengadaan melalui Penyedia (Lokal Kecamatan)</option>
+                  <option value="Bantuan Barang/Jasa / Fasilitasi">Bantuan Barang/Jasa atau Fasilitasi Kegiatan</option>
+                  <option value="Pelayanan / Rekomendasi Kecamatan">Pelayanan / Rekomendasi Administrasi Camat</option>
+                </select>
+              </div>
+              <div>
+                <label for="field-seksi" class="block text-xs font-semibold text-slate-700 mb-1">Seksi Penelaah / Unit Terkait di Kantor Camat <span class="text-red-500">*</span></label>
+                <select id="field-seksi" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+                  <option value="Seksi Pemerintahan">Seksi Pemerintahan</option>
+                  <option value="Seksi Pemberdayaan Masyarakat (PMD)">Seksi Pemberdayaan Masyarakat (PMD)</option>
+                  <option value="Seksi Kesejahteraan Sosial (Kesos)">Seksi Kesejahteraan Sosial (Kesos)</option>
+                  <option value="Seksi Pelayanan Umum / PATEN">Seksi Pelayanan Umum / PATEN</option>
+                  <option value="Seksi Trantibum">Seksi Ketenteraman & Ketertiban Umum</option>
+                  <option value="Subbag Perencanaan & Keuangan">Subbag Perencanaan & Keuangan</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Kriteria Pasal 17 & 18 -->
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4">
+              <p class="text-xs font-semibold text-slate-700 mb-2">Kesesuaian Kriteria Pelaksanaan (Pasal 17 ayat 2 & Pasal 18 ayat 3 Perbup Banggai No. 1/2026):</p>
+              <div id="kriteria-container" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-700">
+                <!-- Populated by JS -->
+              </div>
+            </div>
+
+            <div>
+              <label for="field-urgensi" class="block text-xs font-semibold text-slate-700 mb-1">Latar Belakang, Tujuan & Manfaat bagi Masyarakat <span class="text-red-500">*</span></label>
+              <textarea id="field-urgensi" rows="3" required placeholder="Jelaskan kondisi eksisting, kebutuhan mendesak kelompok/desa, serta dampak positif jika usulan masuk skala prioritas Kecamatan..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600"></textarea>
+            </div>
+          </div>
+
+          <!-- Bagian 3 -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+              <span class="w-6 h-6 rounded-full bg-navy-700 text-white text-xs font-bold flex items-center justify-center">3</span>
+              <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Penerima Manfaat, Lokasi & Rencana Anggaran (RAB)</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="field-anggota" class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Anggota / Penerima Manfaat (Orang)</label>
+                <input id="field-anggota" type="number" min="1" value="25" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-anggaran" class="block text-xs font-semibold text-slate-700 mb-1">Estimasi Nilai Usulan / RAB (Rp)</label>
+                <input id="field-anggaran" type="number" min="0" step="100000" value="15000000" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+              </div>
+              <div>
+                <label for="field-lokasi" class="block text-xs font-semibold text-slate-700 mb-1">Lokasi Kegiatan (Dibatasi di Wilayah Desa/Kelurahan Kec. Bunta)</label>
+                <textarea id="field-lokasi" rows="2" placeholder="Contoh: Dusun II Desa Pongian, Kec. Bunta (lahan/lokasi jelas dan tidak tumpang tindih)." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600"></textarea>
+              </div>
+              <div>
+                <label for="field-swadaya" class="block text-xs font-semibold text-slate-700 mb-1">Kesiapan Swadaya Kelompok & Rencana Pemeliharaan</label>
+                <textarea id="field-swadaya" rows="2" placeholder="Contoh: Kelompok menyiapkan tenaga kerja lokal dan siap didampingi Tenaga Pendamping Kecamatan." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bagian 4 -->
+          <div class="space-y-4">
+            <div class="flex items-center gap-2 pb-2 border-b border-slate-200">
+              <span class="w-6 h-6 rounded-full bg-navy-700 text-white text-xs font-bold flex items-center justify-center">4</span>
+              <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">Checklist Kelengkapan Berkas Proposal</h3>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              <label class="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="lamp-suratPermohonan" class="lampiran-chk mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+                <span class="text-xs text-slate-700"><strong class="block text-slate-900">Surat Permohonan ke Camat</strong>Ditandatangani Ketua & diketahui Kades/Lurah.</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="lamp-naskahProposal" class="lampiran-chk mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+                <span class="text-xs text-slate-700"><strong class="block text-slate-900">Naskah Proposal Lengkap</strong>Latar belakang, tujuan, dan rencana pelaksanaan.</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="lamp-legalitas" class="lampiran-chk mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+                <span class="text-xs text-slate-700"><strong class="block text-slate-900">SK / Legalitas Kelompok</strong>Susunan pengurus & alamat di lokasi kegiatan.</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="lamp-rab" class="lampiran-chk mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+                <span class="text-xs text-slate-700"><strong class="block text-slate-900">Rincian Anggaran Biaya (RAB)</strong>Estimasi kebutuhan sesuai standar harga daerah.</span>
+              </label>
+              <label class="flex items-start gap-2.5 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer">
+                <input type="checkbox" id="lamp-dokumentasi" class="lampiran-chk mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+                <span class="text-xs text-slate-700"><strong class="block text-slate-900">Dokumentasi / Titik Lokasi</strong>Foto kondisi eksisting & KTP pengurus.</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Form Actions -->
+          <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+            <button type="button" id="btn-reset-form" class="px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors">
+              Reset Formulir
+            </button>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <button type="button" id="btn-save-draft" class="px-4 py-2 text-sm font-medium text-navy-700 bg-navy-50 hover:bg-navy-100 border border-navy-200 rounded-lg transition-colors inline-flex items-center gap-1.5">
+                <i data-lucide="save" class="w-4 h-4"></i>
+                Simpan Draft
+              </button>
+              <button type="submit" id="btn-submit-proposal" class="px-5 py-2 text-sm font-semibold text-white bg-navy-700 hover:bg-navy-800 rounded-lg shadow-sm transition-colors inline-flex items-center gap-1.5">
+                <i data-lucide="send" class="w-4 h-4"></i>
+                Ajukan ke Camat
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 3: KATALOG 22 URUSAN PERBUP NO. 1 TAHUN 2026 -->
+    <section id="tab-regulasi" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="text-sm font-bold text-navy-800 mb-1.5">Pasal 15 — Skala Prioritas Usulan</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Camat menyusun skala prioritas program dan kegiatan pelimpahan setiap tahun berdasarkan usulan prioritas Desa/Kelurahan menggunakan pemeringkatan usulan yang disepakati bersama.
+          </p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="text-sm font-bold text-navy-800 mb-1.5">Pasal 17–18 — Swakelola & Kelompok Masyarakat</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Kegiatan diutamakan secara swakelola (Tipe 3 & 4 untuk konstruksi berskala kecil, tidak butuh teknologi/kajian teknis tinggi, memaksimalkan SDM lokal) atau melalui penyedia dengan melibatkan badan usaha/kelompok masyarakat setempat.
+          </p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+          <h3 class="text-sm font-bold text-navy-800 mb-1.5">Pasal 24 — Tenaga Pendamping Kecamatan</h3>
+          <p class="text-xs text-slate-600 leading-relaxed">
+            Pelaksanaan kegiatan didampingi 2 orang Tenaga Pendamping Kecamatan (bidang pemberdayaan & konstruksi) untuk memfasilitasi perencanaan, pemantauan swakelola, hingga pelaporan.
+          </p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-4 sm:p-5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900">Daftar 22 Urusan Pemerintahan (Lampiran Perbup Banggai No. 1 Tahun 2026)</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Klik "Ajukan Kegiatan Ini" pada urusan yang sesuai untuk langsung mengisi formulir proposal.</p>
+          </div>
+          <div class="relative w-full sm:w-72">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+            <input id="catalog-search" type="text" placeholder="Cari urusan atau sub-kegiatan..." class="w-full pl-9 pr-3 py-2 text-xs sm:text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+          </div>
+        </div>
+        <div id="catalog-list" class="divide-y divide-slate-200">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: PRATINJAU & CETAK PROPOSAL -->
+  <div id="modal-preview" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs overflow-y-auto p-4 sm:p-6">
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden my-4">
+      <div class="px-5 py-3.5 bg-navy-800 text-white flex flex-wrap items-center justify-between gap-2 no-print">
+        <div class="flex items-center gap-2">
+          <i data-lucide="file-text" class="w-4 h-4 text-amber-300"></i>
+          <span class="text-sm font-semibold">Pratinjau Surat Permohonan & Proposal</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="btn-print-proposal" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+            Cetak / Simpan PDF
+          </button>
+          <button type="button" id="btn-close-preview" class="p-1.5 rounded-lg hover:bg-white/10 text-slate-200" aria-label="Tutup pratinjau">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+      <div id="print-area" class="p-6 sm:p-10 text-slate-900 text-sm leading-relaxed space-y-5">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: UPDATE STATUS VERIFIKASI / DISPOSISI -->
+  <div id="modal-status" class="fixed inset-0 z-50 hidden bg-slate-900/60 flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="text-sm font-bold text-slate-900">Disposisi & Status Proposal</h3>
+        <button type="button" id="btn-close-status" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form id="status-form" class="p-5 space-y-4">
+        <input type="hidden" id="status-proposal-id" />
+        <div>
+          <p id="status-proposal-title" class="text-xs font-semibold text-navy-700 bg-navy-50 p-2.5 rounded-lg"></p>
+        </div>
+        <div>
+          <label for="status-select" class="block text-xs font-semibold text-slate-700 mb-1">Status Tahapan</label>
+          <select id="status-select" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-navy-600">
+            <option value="Draft">Draft</option>
+            <option value="Diajukan">Diajukan</option>
+            <option value="Disposisi Seksi">Disposisi Seksi</option>
+            <option value="Perlu Perbaikan">Perlu Perbaikan</option>
+            <option value="Disetujui">Disetujui</option>
+          </select>
+        </div>
+        <div>
+          <label for="status-catatan" class="block text-xs font-semibold text-slate-700 mb-1">Catatan Disposisi Camat / Tenaga Pendamping</label>
+          <textarea id="status-catatan" rows="3" placeholder="Tuliskan arahan disposisi ke seksi terkait atau catatan perbaikan berkas..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-status" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-navy-700 hover:bg-navy-800 rounded-lg">Simpan Status</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: KONFIRMASI HAPUS -->
+  <div id="modal-delete" class="fixed inset-0 z-50 hidden bg-slate-900/60 flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-5 space-y-4">
+      <div class="flex items-start gap-3">
+        <div class="p-2 rounded-full bg-red-100 text-red-600 shrink-0"><i data-lucide="alert-triangle" class="w-5 h-5"></i></div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">Hapus Proposal?</h3>
+          <p id="delete-proposal-desc" class="text-xs text-slate-600 mt-1">Tindakan ini akan menghapus data proposal dari database secara permanen.</p>
+        </div>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="btn-cancel-delete" class="px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+        <button type="button" id="btn-confirm-delete" class="px-3.5 py-2 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 rounded-lg">Ya, Hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast-container" class="fixed bottom-4 right-4 z-50 space-y-2 no-print"></div>
+
+  <script>
+    (function () {
+      const SUPABASE_URL = 'https://rfebdkrrhacszynsjsjn.supabase.co';
+      const SUPABASE_KEY = 'sb_publishable_e9CPC-fdfJQpLFO3ZKvE7w_Idr7eWu_';
+      const STORAGE_KEY = 'bunta_proposal_perbup1_2026_v1';
+
+      let sb = null;
+      let dbConnected = false;
+
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        try {
+          sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        } catch (e) {
+          sb = null;
+        }
+      }
+
+      const PERBUP_URUSAN = [
+        {
+          no: 1,
+          nama: 'Urusan Pendidikan',
+          items: [
+            'Melaksanakan Seleksi O2SN, FLS2N, dan Olimpiade Sains Nasional',
+            'Melaksanakan Lomba 9 K Tingkat Kecamatan',
+            'Pendataan anak putus sekolah dan dewasa tidak bersekolah',
+            'Kegiatan Monev evaluasi pelaksanaan pendidikan di sekolah',
+            'Dukungan agenda kebudayaan (festival/lomba, eksibisi, 10 objek Pemajuan Kebudayaan)',
+            'Dukungan perwakilan kecamatan pada Festival Budaya Lipu Celebes & Festival Tunas Bahasa Ibu',
+            'Dukungan festival budaya tahunan serta upacara ritual adat dan keagamaan',
+            'Fasilitasi Kegiatan PAUD Tingkat Desa dan Kecamatan',
+            'Dukungan Seragam Pendidikan'
+          ]
+        },
+        {
+          no: 2,
+          nama: 'Urusan Kesehatan',
+          items: [
+            'Pembangunan Posyandu di Wilayah Kecamatan',
+            'Rehabilitasi Posyandu di Wilayah Kecamatan',
+            'Pemantauan Fogging Lokus, Pengadaan Mesin BHP/Fogging, Operasional Petugas Fogging',
+            'Operasional Kader Posyandu Kelurahan pada Wilayah Kecamatan',
+            'Pendataan kesehatan keluarga & masyarakat miskin usulan JKN/KIS oleh kader Dasawisma',
+            'Sosialisasi dan deteksi dini penyakit berpotensi wabah lintas sektor',
+            'Pelayanan Posyandu untuk peningkatan kualitas layanan masyarakat',
+            'Kegiatan Posyandu Kecamatan',
+            'Dukungan Sarana dan Prasarana Puskesmas Pembantu dan Puskesmas',
+            'Dukungan terhadap Kegiatan Stunting'
+          ]
+        },
+        {
+          no: 3,
+          nama: 'Urusan Pekerjaan Umum dan Penataan Ruang',
+          items: [
+            'Pembangunan tangki septik individual plus bilik sesuai prototipe Dinas PUPR',
+            'Pembangunan jaringan air bersih pedesaan (perluasan jaringan & sambungan rumah)',
+            'Pemeliharaan atau penggantian pipa jaringan air bersih eksisting',
+            'Pembangunan drainase lingkungan atau pedesaan untuk jaringan tersier',
+            'Rehabilitasi ringan/pembangunan sebagian drainase lingkungan/pedesaan/perkotaan',
+            'Pemeliharaan/pembersihan galian endapan drainase lingkungan',
+            'Pembangunan dan/atau Pemeliharaan jalan lingkungan/setapak',
+            'Rehabilitasi ringan bangunan kantor kecamatan dan kelurahan skala kecil',
+            'Pemeliharaan rutin jalan berupa pemarasan damija',
+            'Pembangunan tanggul/talud pengaman jalan skala kecil',
+            'Pengawasan bangunan/kawasan yang tidak sesuai pemanfaatan ruang'
+          ]
+        },
+        {
+          no: 4,
+          nama: 'Urusan Perumahan Rakyat, Kawasan Permukiman dan Pertanahan',
+          items: [
+            'Penimbunan jalan setapak/lingkungan di kawasan kumuh',
+            'Pembangunan/rehabilitasi/peningkatan jalan setapak/lingkungan & plat duiker kawasan kumuh',
+            'Pembangunan jamban/MCK di kawasan kumuh sesuai prototipe',
+            'Pengadaan PJU di kawasan kumuh',
+            'Pembangunan/rehabilitasi drainase tersier di kawasan kumuh',
+            'Penimbunan jalan setapak/lingkungan di perumahan/permukiman',
+            'Pembangunan jamban/MCK di perumahan/permukiman sesuai prototipe',
+            'Pengadaan PJU di kawasan perumahan/permukiman',
+            'Pembangunan/rehabilitasi drainase tersier di perumahan/permukiman',
+            'Inventarisasi, pengawasan, penertiban & pelaporan tanah kosong di kecamatan',
+            'Jalan Lingkungan/Setapak (penimbunan, peningkatan, plat duiker)',
+            'Drainase/Riol dan Plat Duiker type 50/40/50',
+            'MCK/Jamban sesuai prototipe perangkat daerah',
+            'Pengadaan/pemasangan Lampu Penerangan Jalan Umum Tenaga Surya (PJU-TS)',
+            'Fasilitasi mediasi sengketa tanah tingkat kecamatan & pengawasan tanah kosong'
+          ]
+        },
+        {
+          no: 5,
+          nama: 'Urusan Sosial',
+          items: [
+            'Melakukan Pendataan Data Tunggal Sosial dan Ekonomi Nasional (DTSEN) Tingkat Kecamatan',
+            'Bantuan Stimulan Pemberdayaan Masyarakat (Kelompok Usaha Bersama / KUBE)',
+            'Dukungan Penyediaan Bahan Bangunan Rumah Layak Huni'
+          ]
+        },
+        {
+          no: 6,
+          nama: 'Urusan PPPA, Pengendalian Penduduk dan KB',
+          items: [
+            'Fasilitasi Peringatan Hari Ibu Nasional Tingkat Kecamatan',
+            'Pemberdayaan Kelompok Akseptor (Peserta KB) di Kecamatan',
+            'Fasilitasi Pemilihan Putra Putri Generasi Berencana (Genre) Tingkat Kecamatan',
+            'Peningkatan Kapasitas Tim Pendamping Keluarga (TPK) Tingkat Kecamatan',
+            'Peningkatan Kapasitas Tim Percepatan Penurunan Stunting Tingkat Kecamatan',
+            'Dukungan Kegiatan Tim Percepatan Penurunan Stunting Tingkat Kecamatan',
+            'Dukungan Program Pengendalian Penduduk',
+            'Dukungan Program Ketahanan dan Kesejahteraan Keluarga',
+            'Dukungan Program Pembinaan Keluarga Berencana',
+            'Dukungan Program Pengarusutamaan Gender dan Pemberdayaan Perempuan',
+            'Dukungan Program Pemenuhan Hak Anak',
+            'Dukungan Program Perlindungan Perempuan dan Perlindungan Khusus Anak'
+          ]
+        },
+        {
+          no: 7,
+          nama: 'Urusan Tanaman Pangan, Hortikultura dan Perkebunan',
+          items: [
+            'Pemberdayaan masyarakat penganekaragaman konsumsi pangan melalui Bantuan Opal (Obor Pangan Lestari)',
+            'Peningkatan Ketahanan Pangan Keluarga melalui Pemberian Bantuan',
+            'Pengadaan Benih/Bibit Tanaman Pangan, Hortikultura dan Perkebunan',
+            'Pengadaan Sarana Produksi Pertanian',
+            'Pembangunan/Rehabilitasi Jaringan Irigasi Tersier',
+            'Pembangunan/Rehabilitasi Jalan Pertanian mendukung tanaman pangan, hortikultura & perkebunan',
+            'Pembangunan/Rehabilitasi Dam Parit',
+            'Pembangunan/Rehabilitasi Embung',
+            'Pembangunan/Rehabilitasi Irigasi Perpipaan (Tata Air Mikro)',
+            'Peningkatan Kapasitas Kelembagaan Petani di Kecamatan'
+          ]
+        },
+        {
+          no: 8,
+          nama: 'Urusan Kependudukan dan Pencatatan Sipil',
+          items: [
+            'Sosialisasi Administrasi Kependudukan & Pencatatan Sipil serta pengadaan alat peraga',
+            'Dukungan kegiatan pendataan Administrasi Kependudukan dan Pencatatan Sipil di Desa/Kelurahan'
+          ]
+        },
+        {
+          no: 9,
+          nama: 'Urusan Lingkungan Hidup',
+          items: [
+            'Penanganan Sampah melalui Pengangkutan yang didukung Sarana dan Prasarana',
+            'Penanganan Sampah melalui Pengoperasian dan Pemeliharaan Sarana Prasarana',
+            'Penanganan Sampah melalui Pengumpulan Sampah',
+            'Dukungan Terkait Kegiatan Persampahan',
+            'Operasional Petugas Penanganan Sampah Tingkat Kecamatan'
+          ]
+        },
+        {
+          no: 10,
+          nama: 'Urusan Pemberdayaan Masyarakat dan Desa',
+          items: [
+            'Dukungan Evaluasi Rancangan APBDesa (R-APBDesa)',
+            'Monitoring dan Evaluasi Penyerapan Anggaran Keuangan Desa dan Kelurahan per triwulan',
+            'Fasilitasi Penyusunan Peraturan Desa dan Peraturan Kepala Desa',
+            'Fasilitasi dan Pembinaan Pelaksanaan Tugas Kades/Perangkat Desa & Lurah/Perangkat Kelurahan',
+            'Fasilitasi Pelaksanaan Pemilihan Kepala Desa',
+            'Rekomendasi Pengangkatan dan Pemberhentian Perangkat Desa',
+            'Fasilitasi Sinkronisasi Perencanaan Pembangunan Daerah dengan Desa/Kelurahan',
+            'Fasilitasi pelaksanaan tugas, fungsi, dan kewajiban lembaga kemasyarakatan',
+            'Fasilitasi penyusunan program dan pelaksanaan pemberdayaan masyarakat Desa',
+            'Koordinasi pendampingan Desa dan/atau Kelurahan di wilayahnya',
+            'Koordinasi pelaksanaan pembangunan kawasan perdesaan',
+            'Dukungan Penetapan dan Penegasan Batas Desa Tingkat Kecamatan',
+            'Dukungan Lomba Desa Tingkat Kecamatan',
+            'Fasilitasi Sarana & Prasarana Kelembagaan Lembaga Kemasyarakatan Desa/Kelurahan',
+            'Peningkatan Kapasitas Kelembagaan Kemasyarakatan Desa/Kelurahan',
+            'Evaluasi APBDes',
+            'Klarifikasi Peraturan Desa Kewenangan Desa',
+            'Evaluasi Rancangan Peraturan Desa APBDes & SOTK',
+            'Izin Cuti Kepala Desa & Pengangkatan Pelaksana Harian Kepala Desa',
+            'Pelatihan Kewirausahaan & Manajemen Usaha Lembaga Ekonomi Desa/Kelurahan (Bumdes/Bumdesma/Koperasi Merah Putih)',
+            'Penyertaan Modal Usaha pada Lembaga Ekonomi Desa dan Kelurahan',
+            'Dukungan Dana Peningkatan SDM Aparat Desa/Kelurahan dan BPD'
+          ]
+        },
+        {
+          no: 11,
+          nama: 'Urusan Perhubungan',
+          items: [
+            'Pengadaan Penerangan Jalan Umum (PJU) LED 100 s/d 200 Watt di wilayah Kecamatan'
+          ]
+        },
+        {
+          no: 12,
+          nama: 'Urusan Komunikasi, Informatika, Statistik dan Persandian',
+          items: [
+            'Penyediaan data Informasi Publik ke dalam Website PPID',
+            'Pembuatan Dokumen PPID Pembantu Tahunan & Rapat Evaluasi Tahunan PPID',
+            'Pemberdayaan Komunitas Informasi Masyarakat (KIM) melalui sosialisasi & pembinaan',
+            'Pembentukan & Rapat Evaluasi Komunitas Informasi Masyarakat di desa/kelurahan',
+            'Pembentukan Pejabat Pengelola Informasi dan Dokumentasi (PPID) pelaksana kecamatan',
+            'Penyusunan Laporan PPID Pelaksana Tahunan'
+          ]
+        },
+        {
+          no: 13,
+          nama: 'Urusan Koperasi, Usaha Kecil dan Menengah',
+          items: [
+            'Pembangunan Lapak Pelaku Usaha Mikro',
+            'Peningkatan Kapasitas Pelaku Usaha Kecil, Menengah dan Koperasi'
+          ]
+        },
+        {
+          no: 14,
+          nama: 'Urusan Kepemudaan dan Olahraga',
+          items: [
+            'Pelaksanaan Penyuluhan/Sosialisasi Bahaya Narkoba kepada pelajar dan Pemuda',
+            'Pelaksanaan Kompetisi Olahraga Tingkat Kecamatan',
+            'Fasilitasi pengadaan peralatan olahraga',
+            'Dukungan keikutsertaan kontingen Kecamatan dalam Pekan dan Kejuaraan Olahraga',
+            'Dukungan terhadap Pembinaan Anggota Kwarran (Pramuka)',
+            'Dukungan terhadap Perkemahan Ranting & Kepramukaan Kwarcab'
+          ]
+        },
+        {
+          no: 15,
+          nama: 'Urusan Perpustakaan dan Kearsipan',
+          items: [
+            'Dukungan Pembangunan Gedung Perpustakaan Kecamatan, Desa dan Kelurahan',
+            'Fasilitasi Perpustakaan Digital di Kecamatan',
+            'Sosialisasi Pengembangan & Pengolahan Perpustakaan Tingkat Kecamatan',
+            'Dukungan Sosialisasi Budaya Baca & Lomba Perpustakaan Desa/Kelurahan',
+            'Dukungan Transformasi Perpustakaan Berbasis Inklusi Sosial & Bimbingan Teknis'
+          ]
+        },
+        {
+          no: 16,
+          nama: 'Urusan Kelautan dan Perikanan',
+          items: [
+            'Pemberdayaan Nelayan Kecil (Pengadaan Katinting, Alat Pancing, dan Gill Net)',
+            'Pengelolaan Pembudidayaan Ikan (Benih & pakan ikan air tawar/payau/udang, cetak kolam)',
+            'Fasilitas Pelaku Usaha Perikanan Skala Mikro dan Kecil (Pengadaan Cool Box dan Freezer)',
+            'Dukungan fasilitas bagi Pelaku Usaha Perikanan Skala Mikro dan Kecil'
+          ]
+        },
+        {
+          no: 17,
+          nama: 'Urusan Pariwisata',
+          items: [
+            'Fasilitasi Kegiatan Festival Pariwisata tingkat Kecamatan dan Kabupaten',
+            'Pembangunan Sarana dan Prasarana Pariwisata',
+            'Pengadaan/Pemeliharaan/Rehabilitasi Sarana Prasarana Daya Tarik Wisata & Desa Wisata',
+            'Fasilitasi Pemasaran Pariwisata sesuai karakter masing-masing Kecamatan',
+            'Dukungan Kegiatan Budaya dan Pariwisata (Pengadaan Baju Adat)',
+            'Dukungan Kegiatan Festival Budaya tingkat Kabupaten'
+          ]
+        },
+        {
+          no: 18,
+          nama: 'Urusan Pertanian (Perkebunan & Peternakan)',
+          items: [
+            'Dukungan Benih/Bibit Pertanian dan Perkebunan',
+            'Dukungan Pupuk dan Pestisida untuk Pertanian',
+            'Dukungan Sarana Pendukung Pertanian dan Perkebunan',
+            'Pembangunan/Rehabilitasi Jaringan Irigasi Tersier & Jalan Usaha Tani',
+            'Peningkatan Kapasitas Petani & Dukungan Sarana Pertanian di Kecamatan',
+            'Peternakan: Dukungan Vaksin, Pakan dan Bibit Ternak',
+            'Peternakan: Dukungan Sarana Peternakan'
+          ]
+        },
+        {
+          no: 19,
+          nama: 'Urusan Perdagangan dan Perindustrian',
+          items: [
+            'Dukungan Peningkatan Kapasitas Pelaku Usaha Industri Mikro, Kecil dan Menengah (IKM/UMKM)',
+            'Dukungan Peningkatan Kapasitas Calon Pelaku Usaha Mikro, Kecil dan Menengah berbasis SDA lokal'
+          ]
+        },
+        {
+          no: 20,
+          nama: 'Urusan Tenaga Kerja dan Transmigrasi',
+          items: [
+            'Dukungan Peningkatan Keterampilan bagi Pencari Kerja berdasarkan Klaster Kompetensi',
+            'Dukungan Perluasan Kesempatan Kerja',
+            'Fasilitasi Daerah Pesisir Wilayah Transmigrasi Tingkat Kecamatan',
+            'Fasilitasi Bantuan Barang di Wilayah Kawasan Transmigrasi Tingkat Kecamatan'
+          ]
+        },
+        {
+          no: 21,
+          nama: 'Urusan Ketentraman, Ketertiban Umum dan Perlindungan Masyarakat',
+          items: [
+            'Satpol PP: Dukungan Jasa Tenaga Satuan Perlindungan Masyarakat (Satlinmas)',
+            'Satpol PP: Peningkatan Kapasitas SDM Satlinmas & Kegiatan Trantibumlinmas',
+            'Damkar: Peningkatan Kapasitas Aparatur & Masyarakat dalam Penanggulangan Kebakaran',
+            'Damkar: Pengadaan APAR Kantor Pemerintah, Alat Pemadam Skala Kecil & Pos Damkar Kecamatan',
+            'Kesbangpol: Dukungan Forum Pembauran Kebangsaan, Paskibraka, FKDM, Forkopimcam & FKUB',
+            'Bencana: Fasilitasi Pembentukan Desa/Kecamatan Tangguh Bencana & Rambu Kebencanaan'
+          ]
+        },
+        {
+          no: 22,
+          nama: 'Unsur Pendukung Urusan Pemerintahan (Sekretariat Daerah)',
+          items: [
+            'Bagian Kesra: Dukungan Bantuan Barang/Jasa kepada Organisasi Keagamaan',
+            'Bagian Kesra: Dukungan Pelatihan Penyelenggaraan Kegiatan Keagamaan',
+            'Bagian Kesra: Dukungan Pelaksanaan Hari-Hari Besar Keagamaan Tingkat Kecamatan & Kabupaten',
+            'Bagian SDA: Pengawasan dan Pengendalian BBM dan LPG Bersubsidi di Kecamatan',
+            'Bagian SDA: Penyelesaian Permasalahan Sumber Daya Alam di Kecamatan'
+          ]
+        }
+      ];
+
+      const KRITERIA_PASAL = [
+        'Kegiatan berskala kecil (Pasal 17 ayat 2 huruf a)',
+        'Tidak memerlukan kajian teknis yang tinggi (Pasal 17 ayat 2 huruf b)',
+        'Tidak memerlukan teknologi tinggi (Pasal 17 ayat 2 huruf c)',
+        'Memaksimalkan penggunaan sumber daya lokal (Pasal 17 ayat 2 huruf e)',
+        'Tidak tumpang tindih dengan kegiatan Perangkat Daerah teknis (Pasal 17 ayat 2 huruf f)',
+        'Kelompok beralamat dan beroperasi di Desa/Kelurahan Kec. Bunta (Pasal 18 ayat 3-4)'
+      ];
+
+      const INITIAL_SAMPLES = [
+        {
+          id: 'PROP-2026-001',
+          nomorSurat: '014/KN-BAHARI/XI/2026',
+          tanggal: '2026-11-12',
+          jenisPengusul: 'Kelompok Tani / Nelayan / UMKM',
+          namaPengusul: 'Kelompok Nelayan Bahari Jaya',
+          wilayah: 'Desa Pongian, Kec. Bunta',
+          tujuanCamat: 'Camat Bunta (Kabupaten Banggai)',
+          ketua: 'Ahmad Fadli',
+          kontak: '0852-4110-2290',
+          urusanNo: 16,
+          urusanNama: 'Urusan Kelautan dan Perikanan',
+          subKegiatan: 'Fasilitas Pelaku Usaha Perikanan Skala Mikro dan Kecil (Pengadaan Cool Box dan Freezer)',
+          judul: 'Proposal Pengadaan Cool Box & Freezer Penyimpanan Ikan untuk Nelayan Kecil Desa Pongian',
+          mekanisme: 'Bantuan Barang/Jasa / Fasilitasi',
+          seksiTujuan: 'Seksi Pemberdayaan Masyarakat (PMD)',
+          kriteria: [
+            'Kegiatan berskala kecil (Pasal 17 ayat 2 huruf a)',
+            'Memaksimalkan penggunaan sumber daya lokal (Pasal 17 ayat 2 huruf e)',
+            'Kelompok beralamat dan beroperasi di Desa/Kelurahan Kec. Bunta (Pasal 18 ayat 3-4)'
+          ],
+          urgensi: 'Hasil tangkapan nelayan skala mikro di Desa Pongian sering mengalami penurunan mutu akibat keterbatasan sarana rantai dingin. Bantuan Cool Box dan Freezer akan menjaga kesegaran ikan sebelum dipasarkan.',
+          anggota: 20,
+          anggaran: 22500000,
+          lokasi: 'Sekretariat Kelompok Nelayan Bahari Jaya, Pesisir Dusun I Desa Pongian.',
+          swadaya: 'Kelompok menyediakan bangunan gudang penampungan sementara dan biaya listrik operasional.',
+          lampiran: { suratPermohonan: true, naskahProposal: true, legalitas: true, rab: true, dokumentasi: false },
+          status: 'Disposisi Seksi',
+          catatanVerifikator: 'Disposisi Camat ke Seksi PMD & Tenaga Pendamping Kecamatan untuk verifikasi lapangan.',
+          updatedAt: '2026-11-18T09:30:00Z'
+        },
+        {
+          id: 'PROP-2026-002',
+          nomorSurat: '008/PHBI-BUNTA/XI/2026',
+          tanggal: '2026-11-15',
+          jenisPengusul: 'Lembaga Keagamaan / Pendidikan / Lainnya',
+          namaPengusul: 'Panitia Hari Besar Keagamaan Kec. Bunta',
+          wilayah: 'Kelurahan Bunta I, Kec. Bunta',
+          tujuanCamat: 'Camat Bunta (Kabupaten Banggai)',
+          ketua: 'H. Mansyur',
+          kontak: '0813-5521-8840',
+          urusanNo: 22,
+          urusanNama: 'Unsur Pendukung Urusan Pemerintahan (Sekretariat Daerah)',
+          subKegiatan: 'Bagian Kesra: Dukungan Pelaksanaan Hari-Hari Besar Keagamaan Tingkat Kecamatan & Kabupaten',
+          judul: 'Proposal Dukungan Pelaksanaan Peringatan Hari Besar Keagamaan Tingkat Kecamatan Bunta',
+          mekanisme: 'Bantuan Barang/Jasa / Fasilitasi',
+          seksiTujuan: 'Seksi Kesejahteraan Sosial (Kesos)',
+          kriteria: [
+            'Kegiatan berskala kecil (Pasal 17 ayat 2 huruf a)',
+            'Memaksimalkan penggunaan sumber daya lokal (Pasal 17 ayat 2 huruf e)',
+            'Kelompok beralamat dan beroperasi di Desa/Kelurahan Kec. Bunta (Pasal 18 ayat 3-4)'
+          ],
+          urgensi: 'Memperkuat syiar keagamaan dan kerukunan antarumat beragama di tingkat Kecamatan Bunta dengan melibatkan seluruh desa dan kelurahan.',
+          anggota: 150,
+          anggaran: 15000000,
+          lokasi: 'Lapangan Kecamatan / Masjid Agung Kecamatan Bunta.',
+          swadaya: 'Swadaya panitia dan masyarakat untuk konsumsi dan kepanitiaan lapangan.',
+          lampiran: { suratPermohonan: true, naskahProposal: true, legalitas: true, rab: true, dokumentasi: true },
+          status: 'Disetujui',
+          catatanVerifikator: 'Disetujui Camat dan masuk agenda prioritas Seksi Kesos.',
+          updatedAt: '2026-11-20T14:15:00Z'
+        },
+        {
+          id: 'PROP-2026-003',
+          nomorSurat: '021/POKTAN-SM/XI/2026',
+          tanggal: '2026-11-21',
+          jenisPengusul: 'Kelompok Tani / Nelayan / UMKM',
+          namaPengusul: 'Kelompok Tani Sumber Makmur',
+          wilayah: 'Desa Bohotokong, Kec. Bunta',
+          tujuanCamat: 'Camat Bunta (Kabupaten Banggai)',
+          ketua: 'Suherman',
+          kontak: '0821-9904-1172',
+          urusanNo: 7,
+          urusanNama: 'Urusan Tanaman Pangan, Hortikultura dan Perkebunan',
+          subKegiatan: 'Pembangunan/Rehabilitasi Jalan Pertanian mendukung tanaman pangan, hortikultura & perkebunan',
+          judul: 'Usulan Swakelola Rehabilitasi Jalan Pertanian Akses Lahan Perkebunan Desa Bohotokong',
+          mekanisme: 'Swakelola Tipe III / IV (Kelompok Masyarakat)',
+          seksiTujuan: 'Seksi Pemberdayaan Masyarakat (PMD)',
+          kriteria: [
+            'Kegiatan berskala kecil (Pasal 17 ayat 2 huruf a)',
+            'Tidak memerlukan kajian teknis yang tinggi (Pasal 17 ayat 2 huruf b)',
+            'Tidak memerlukan teknologi tinggi (Pasal 17 ayat 2 huruf c)',
+            'Kelompok beralamat dan beroperasi di Desa/Kelurahan Kec. Bunta (Pasal 18 ayat 3-4)'
+          ],
+          urgensi: 'Jalan produksi sepanjang ±450 meter rusak saat musim hujan sehingga menyulitkan pengangkutan hasil panen jagung dan kelapa.',
+          anggota: 32,
+          anggaran: 28000000,
+          lokasi: 'Jalur Perkebunan Dusun II Desa Bohotokong, Kec. Bunta.',
+          swadaya: 'Kelompok siap melaksanakan pekerjaan secara swakelola dengan tenaga petani setempat.',
+          lampiran: { suratPermohonan: true, naskahProposal: true, legalitas: false, rab: true, dokumentasi: false },
+          status: 'Perlu Perbaikan',
+          catatanVerifikator: 'Mohon lengkapi SK Pengukuhan Poktan dan foto titik 0% jalan pertanian.',
+          updatedAt: '2026-11-22T10:00:00Z'
+        }
+      ];
+
+      let proposals = [];
+      let statusChart = null;
+      let kategoriChart = null;
+      let pendingDeleteId = null;
+
+      function setDbBadge(connected, labelText) {
+        dbConnected = connected;
+        const badge = document.getElementById('db-status-badge');
+        if (!badge) return;
+        if (connected) {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/20 text-emerald-200 border border-emerald-400/30';
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${escapeHtml(labelText || 'Supabase Terhubung')}`;
+        } else {
+          badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/20 text-amber-200 border border-amber-400/30';
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>${escapeHtml(labelText || 'Mode Lokal (Cache)')}`;
+        }
+      }
+
+      function toDbRow(p) {
+        return {
+          id: p.id,
+          nomor_surat: p.nomorSurat,
+          tanggal: p.tanggal,
+          jenis_pengusul: p.jenisPengusul,
+          nama_pengusul: p.namaPengusul,
+          wilayah: p.wilayah,
+          tujuan_camat: p.tujuanCamat,
+          ketua: p.ketua,
+          kontak: p.kontak || '',
+          urusan_no: Number(p.urusanNo) || 1,
+          urusan_nama: p.urusanNama || '',
+          sub_kegiatan: p.subKegiatan || '',
+          judul: p.judul,
+          mekanisme: p.mekanisme || '',
+          seksi_tujuan: p.seksiTujuan || '',
+          kriteria: Array.isArray(p.kriteria) ? p.kriteria : [],
+          urgensi: p.urgensi || '',
+          anggota: Number(p.anggota) || 0,
+          anggaran: Number(p.anggaran) || 0,
+          lokasi: p.lokasi || '',
+          swadaya: p.swadaya || '',
+          lampiran: p.lampiran || {},
+          status: p.status || 'Diajukan',
+          catatan_verifikator: p.catatanVerifikator || '',
+          updated_at: p.updatedAt || new Date().toISOString()
+        };
+      }
+
+      function fromDbRow(r) {
+        return {
+          id: r.id,
+          nomorSurat: r.nomor_surat,
+          tanggal: r.tanggal,
+          jenisPengusul: r.jenis_pengusul,
+          namaPengusul: r.nama_pengusul,
+          wilayah: r.wilayah,
+          tujuanCamat: r.tujuan_camat,
+          ketua: r.ketua,
+          kontak: r.kontak || '',
+          urusanNo: r.urusan_no,
+          urusanNama: r.urusan_nama,
+          subKegiatan: r.sub_kegiatan,
+          judul: r.judul,
+          mekanisme: r.mekanisme,
+          seksiTujuan: r.seksi_tujuan,
+          kriteria: Array.isArray(r.kriteria) ? r.kriteria : [],
+          urgensi: r.urgensi || '',
+          anggota: Number(r.anggota) || 0,
+          anggaran: Number(r.anggaran) || 0,
+          lokasi: r.lokasi || '',
+          swadaya: r.swadaya || '',
+          lampiran: r.lampiran || {},
+          status: r.status || 'Diajukan',
+          catatanVerifikator: r.catatan_verifikator || '',
+          updatedAt: r.updated_at
+        };
+      }
+
+      function saveLocalCache() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(proposals));
+        } catch (e) {
+          // Ignore storage error
+        }
+      }
+
+      function loadLocalCache() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed)) return parsed;
+          }
+        } catch (e) {
+          // Ignore
+        }
+        return JSON.parse(JSON.stringify(INITIAL_SAMPLES));
+      }
+
+      async function syncFromSupabase(silent = true) {
+        if (!sb) {
+          setDbBadge(false, 'Mode Lokal');
+          return;
+        }
+        try {
+          const { data, error } = await sb
+            .from('proposals')
+            .select('*')
+            .order('updated_at', { ascending: false });
+
+          if (error) throw error;
+
+          setDbBadge(true, 'Supabase Terhubung');
+          proposals = (data || []).map(fromDbRow);
+          saveLocalCache();
+          renderDashboard();
+          if (!silent) showToast('Data berhasil disinkronkan dari Supabase.');
+        } catch (err) {
+          setDbBadge(false, 'Mode Lokal (Offline)');
+          if (!silent) showToast('Gagal terhubung ke Supabase, menampilkan data lokal.', 'info');
+        }
+      }
+
+      async function seedSamplesToDb() {
+        const samples = JSON.parse(JSON.stringify(INITIAL_SAMPLES));
+        proposals = samples;
+        saveLocalCache();
+        if (sb && dbConnected) {
+          try {
+            const { error } = await sb.from('proposals').upsert(samples.map(toDbRow));
+            if (error) throw error;
+            showToast('3 contoh proposal berhasil disimpan ke database Supabase.');
+          } catch (e) {
+            showToast('Contoh dimuat secara lokal (gagal menulis ke Supabase).', 'error');
+          }
+        } else {
+          showToast('3 contoh proposal dimuat secara lokal.');
+        }
+        renderDashboard();
+      }
+
+      function formatRupiah(num) {
+        const val = Number(num) || 0;
+        return new Intl.NumberFormat('id-ID', {
+          style: 'currency',
+          currency: 'IDR',
+          maximumFractionDigits: 0
+        }).format(val);
+      }
+
+      function formatTanggal(isoDate) {
+        if (!isoDate) return '-';
+        const d = new Date(isoDate + 'T00:00:00');
+        if (isNaN(d.getTime())) return isoDate;
+        return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+
+      function escapeHtml(str) {
+        return String(str ?? '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const colors = {
+          success: 'bg-emerald-700 text-white',
+          error: 'bg-red-600 text-white',
+          info: 'bg-navy-800 text-white'
+        };
+        toast.className = `${colors[type] || colors.info} px-4 py-2.5 rounded-lg shadow-lg text-xs sm:text-sm font-medium flex items-center gap-2 transition-opacity duration-300`;
+        toast.textContent = message;
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          setTimeout(() => toast.remove(), 300);
+        }, 3200);
+      }
+
+      function switchTab(tabName) {
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+          const active = btn.dataset.tab === tabName;
+          btn.classList.toggle('bg-white/15', active);
+          btn.classList.toggle('text-white', active);
+          btn.classList.toggle('text-slate-200', !active);
+        });
+        ['dashboard', 'form', 'regulasi'].forEach(name => {
+          const el = document.getElementById(`tab-${name}`);
+          if (el) el.classList.toggle('hidden', name !== tabName);
+        });
+        if (tabName === 'dashboard') renderDashboard();
+        if (tabName === 'regulasi') renderCatalog();
+      }
+
+      function getStatusBadge(status) {
+        const map = {
+          'Draft': 'bg-slate-100 text-slate-700 border-slate-200',
+          'Diajukan': 'bg-blue-50 text-blue-700 border-blue-200',
+          'Disposisi Seksi': 'bg-amber-50 text-amber-700 border-amber-200',
+          'Perlu Perbaikan': 'bg-rose-50 text-rose-700 border-rose-200',
+          'Disetujui': 'bg-emerald-50 text-emerald-700 border-emerald-200'
+        };
+        const cls = map[status] || map['Draft'];
+        return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold border ${cls}">${escapeHtml(status)}</span>`;
+      }
+
+      function countLampiran(lampiran) {
+        if (!lampiran) return 0;
+        return Object.values(lampiran).filter(Boolean).length;
+      }
+
+      function getFilteredProposals() {
+        const q = (document.getElementById('search-input').value || '').trim().toLowerCase();
+        const st = document.getElementById('filter-status').value;
+        const kat = document.getElementById('filter-kategori').value;
+
+        return proposals.filter(p => {
+          const matchQ = !q ||
+            (p.namaPengusul || '').toLowerCase().includes(q) ||
+            (p.wilayah || '').toLowerCase().includes(q) ||
+            (p.judul || '').toLowerCase().includes(q) ||
+            (p.urusanNama || '').toLowerCase().includes(q) ||
+            (p.subKegiatan || '').toLowerCase().includes(q) ||
+            (p.nomorSurat || '').toLowerCase().includes(q);
+          const matchSt = !st || p.status === st;
+          const matchKat = !kat || p.jenisPengusul === kat;
+          return matchQ && matchSt && matchKat;
+        });
+      }
+
+      function renderKPIs() {
+        const total = proposals.length;
+        const proses = proposals.filter(p => p.status === 'Diajukan' || p.status === 'Disposisi Seksi').length;
+        const disetujui = proposals.filter(p => p.status === 'Disetujui').length;
+        const totalAnggaran = proposals.reduce((acc, p) => acc + (Number(p.anggaran) || 0), 0);
+
+        document.getElementById('kpi-total').textContent = total;
+        document.getElementById('kpi-proses').textContent = proses;
+        document.getElementById('kpi-disetujui').textContent = disetujui;
+        document.getElementById('kpi-anggaran').textContent = formatRupiah(totalAnggaran);
+      }
+
+      function renderCharts() {
+        if (typeof Chart === 'undefined') return;
+
+        const statusLabels = ['Draft', 'Diajukan', 'Disposisi Seksi', 'Perlu Perbaikan', 'Disetujui'];
+        const statusCounts = statusLabels.map(lbl => proposals.filter(p => p.status === lbl).length);
+
+        const ctxStatus = document.getElementById('chart-status').getContext('2d');
+        if (statusChart) statusChart.destroy();
+        statusChart = new Chart(ctxStatus, {
+          type: 'bar',
+          data: {
+            labels: statusLabels,
+            datasets: [{
+              label: 'Jumlah Proposal',
+              data: statusCounts,
+              backgroundColor: ['#94a3b8', '#3b82f6', '#f59e0b', '#f43f5e', '#10b981'],
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+              y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } },
+              x: { ticks: { font: { size: 11 } } }
+            }
+          }
+        });
+
+        const katLabels = [
+          'Kelompok Masyarakat',
+          'Kelompok Tani / Nelayan / UMKM',
+          'Ormas / Pemuda',
+          'Desa / Kelurahan',
+          'Lembaga Keagamaan / Pendidikan / Lainnya'
+        ];
+        const katShortLabels = ['Pokmas', 'Poktan/Nelayan/UMKM', 'Ormas/Pemuda', 'Desa/Kelurahan', 'Lembaga Lainnya'];
+        const katCounts = katLabels.map(lbl => proposals.filter(p => p.jenisPengusul === lbl).length);
+
+        const ctxKat = document.getElementById('chart-kategori').getContext('2d');
+        if (kategoriChart) kategoriChart.destroy();
+        kategoriChart = new Chart(ctxKat, {
+          type: 'doughnut',
+          data: {
+            labels: katShortLabels,
+            datasets: [{
+              data: katCounts,
+              backgroundColor: ['#1e3a5f', '#0d9488', '#d97706', '#6366f1', '#64748b'],
+              borderWidth: 2,
+              borderColor: '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } }
+            }
+          }
+        });
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('proposal-table-body');
+        const empty = document.getElementById('empty-state');
+        const rows = getFilteredProposals();
+
+        if (rows.length === 0) {
+          tbody.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        tbody.innerHTML = rows.map(p => {
+          const lampCount = countLampiran(p.lampiran);
+          return `
+            <tr class="hover:bg-slate-50/80 transition-colors">
+              <td class="py-3.5 px-4 align-top whitespace-nowrap">
+                <div class="font-semibold text-slate-900 text-xs">${escapeHtml(p.nomorSurat)}</div>
+                <div class="text-xs text-slate-500 mt-0.5">${formatTanggal(p.tanggal)}</div>
+              </td>
+              <td class="py-3.5 px-4 align-top">
+                <div class="font-semibold text-slate-900">${escapeHtml(p.namaPengusul)}</div>
+                <span class="inline-block mt-0.5 px-2 py-0.5 rounded bg-navy-50 text-navy-700 text-[11px] font-medium">${escapeHtml(p.jenisPengusul)}</span>
+                <div class="text-xs text-slate-500 mt-1">${escapeHtml(p.wilayah)}</div>
+              </td>
+              <td class="py-3.5 px-4 align-top max-w-xs">
+                <div class="font-semibold text-slate-900 leading-snug">${escapeHtml(p.judul)}</div>
+                <div class="text-xs text-navy-700 font-medium mt-1">${p.urusanNo ? `${p.urusanNo}. ` : ''}${escapeHtml(p.urusanNama)}</div>
+                <div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(p.seksiTujuan)} • ${escapeHtml(p.mekanisme)}</div>
+                ${p.catatanVerifikator ? `<div class="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 rounded px-2 py-1 mt-1.5">${escapeHtml(p.catatanVerifikator)}</div>` : ''}
+              </td>
+              <td class="py-3.5 px-4 align-top whitespace-nowrap">
+                <div class="text-xs font-semibold text-slate-800">${formatRupiah(p.anggaran)}</div>
+                <div class="text-xs text-slate-500 mt-0.5">Penerima: ${Number(p.anggota) || 0} org • Berkas: ${lampCount}/5</div>
+              </td>
+              <td class="py-3.5 px-4 align-top whitespace-nowrap">
+                ${getStatusBadge(p.status)}
+              </td>
+              <td class="py-3.5 px-4 align-top text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1">
+                  <button type="button" data-action="preview" data-id="${escapeHtml(p.id)}" title="Pratinjau & Cetak" class="p-1.5 rounded-lg text-navy-700 hover:bg-navy-50 transition-colors">
+                    <i data-lucide="printer" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" data-action="status" data-id="${escapeHtml(p.id)}" title="Disposisi & Status" class="p-1.5 rounded-lg text-amber-600 hover:bg-amber-50 transition-colors">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" data-action="edit" data-id="${escapeHtml(p.id)}" title="Edit Proposal" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors">
+                    <i data-lucide="pencil" class="w-4 h-4"></i>
+                  </button>
+                  <button type="button" data-action="delete" data-id="${escapeHtml(p.id)}" title="Hapus" class="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function renderDashboard() {
+        renderKPIs();
+        renderCharts();
+        renderTable();
+      }
+
+      function populateUrusanDropdown(selectedNo = 1) {
+        const sel = document.getElementById('field-urusan');
+        sel.innerHTML = PERBUP_URUSAN.map(u => `
+          <option value="${u.no}" ${Number(selectedNo) === u.no ? 'selected' : ''}>${u.no}. ${escapeHtml(u.nama)}</option>
+        `).join('');
+        populateSubkegiatanDropdown(selectedNo);
+      }
+
+      function populateSubkegiatanDropdown(urusanNo, selectedSub = '') {
+        const urusan = PERBUP_URUSAN.find(u => u.no === Number(urusanNo)) || PERBUP_URUSAN[0];
+        const sel = document.getElementById('field-subkegiatan');
+        sel.innerHTML = urusan.items.map(item => `
+          <option value="${escapeHtml(item)}" ${item === selectedSub ? 'selected' : ''}>${escapeHtml(item)}</option>
+        `).join('');
+      }
+
+      function renderKriteriaCheckboxes(selected = []) {
+        const container = document.getElementById('kriteria-container');
+        container.innerHTML = KRITERIA_PASAL.map(item => {
+          const checked = selected.includes(item) ? 'checked' : '';
+          return `
+            <label class="flex items-start gap-2 cursor-pointer p-1.5 rounded hover:bg-white">
+              <input type="checkbox" name="kriteria" value="${escapeHtml(item)}" ${checked} class="mt-0.5 rounded text-navy-700 focus:ring-navy-600" />
+              <span>${escapeHtml(item)}</span>
+            </label>
+          `;
+        }).join('');
+      }
+
+      function updateLampiranBadge() {
+        const checkedCount = document.querySelectorAll('.lampiran-chk:checked').length;
+        const badge = document.getElementById('lampiran-badge');
+        badge.textContent = `${checkedCount}/5 Dokumen`;
+        badge.className = checkedCount === 5
+          ? 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800'
+          : 'px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800';
+      }
+
+      function resetForm() {
+        document.getElementById('proposal-form').reset();
+        document.getElementById('field-id').value = '';
+        document.getElementById('field-tujuan-camat').value = 'Camat Bunta (Kabupaten Banggai)';
+        document.getElementById('field-tanggal').value = new Date().toISOString().slice(0, 10);
+        document.getElementById('field-anggota').value = 25;
+        document.getElementById('field-anggaran').value = 15000000;
+        document.getElementById('form-heading').textContent = 'Formulir Pengajuan Proposal ke Camat Bunta';
+        document.getElementById('form-tab-label').textContent = 'Ajukan Proposal';
+        populateUrusanDropdown(1);
+        renderKriteriaCheckboxes([]);
+        updateLampiranBadge();
+      }
+
+      function loadProposalToForm(id) {
+        const p = proposals.find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('field-id').value = p.id;
+        document.getElementById('field-jenis-pengusul').value = p.jenisPengusul || 'Kelompok Masyarakat';
+        document.getElementById('field-nama-pengusul').value = p.namaPengusul || '';
+        document.getElementById('field-wilayah').value = p.wilayah || '';
+        document.getElementById('field-tujuan-camat').value = p.tujuanCamat || 'Camat Bunta (Kabupaten Banggai)';
+        document.getElementById('field-nomor').value = p.nomorSurat || '';
+        document.getElementById('field-tanggal').value = p.tanggal || '';
+        document.getElementById('field-ketua').value = p.ketua || '';
+        document.getElementById('field-kontak').value = p.kontak || '';
+
+        const uNo = p.urusanNo || 1;
+        populateUrusanDropdown(uNo);
+        populateSubkegiatanDropdown(uNo, p.subKegiatan || '');
+
+        document.getElementById('field-judul').value = p.judul || '';
+        document.getElementById('field-mekanisme').value = p.mekanisme || 'Swakelola Tipe III / IV (Kelompok Masyarakat)';
+        document.getElementById('field-seksi').value = p.seksiTujuan || 'Seksi Pemerintahan';
+        renderKriteriaCheckboxes(p.kriteria || []);
+        document.getElementById('field-urgensi').value = p.urgensi || '';
+        document.getElementById('field-anggota').value = p.anggota ?? 0;
+        document.getElementById('field-anggaran').value = p.anggaran ?? 0;
+        document.getElementById('field-lokasi').value = p.lokasi || '';
+        document.getElementById('field-swadaya').value = p.swadaya || '';
+
+        const lamp = p.lampiran || {};
+        ['suratPermohonan', 'naskahProposal', 'legalitas', 'rab', 'dokumentasi'].forEach(k => {
+          const el = document.getElementById(`lamp-${k}`);
+          if (el) el.checked = Boolean(lamp[k]);
+        });
+        updateLampiranBadge();
+
+        document.getElementById('form-heading').textContent = `Edit Proposal: ${p.namaPengusul}`;
+        document.getElementById('form-tab-label').textContent = 'Edit Proposal';
+        switchTab('form');
+      }
+
+      async function saveProposalFromForm(targetStatus) {
+        const namaPengusul = document.getElementById('field-nama-pengusul').value.trim();
+        const wilayah = document.getElementById('field-wilayah').value.trim();
+        const tujuanCamat = document.getElementById('field-tujuan-camat').value.trim();
+        const nomor = document.getElementById('field-nomor').value.trim();
+        const tanggal = document.getElementById('field-tanggal').value;
+        const ketua = document.getElementById('field-ketua').value.trim();
+        const judul = document.getElementById('field-judul').value.trim();
+        const urgensi = document.getElementById('field-urgensi').value.trim();
+
+        if (!namaPengusul || !wilayah || !tujuanCamat || !nomor || !tanggal || !ketua || !judul || !urgensi) {
+          showToast('Mohon lengkapi seluruh kolom bertanda bintang (*).', 'error');
+          return;
+        }
+
+        const urusanNo = Number(document.getElementById('field-urusan').value);
+        const urusanObj = PERBUP_URUSAN.find(u => u.no === urusanNo) || PERBUP_URUSAN[0];
+        const existingId = document.getElementById('field-id').value;
+        const kriteria = Array.from(document.querySelectorAll('input[name="kriteria"]:checked')).map(el => el.value);
+        const lampiran = {
+          suratPermohonan: document.getElementById('lamp-suratPermohonan').checked,
+          naskahProposal: document.getElementById('lamp-naskahProposal').checked,
+          legalitas: document.getElementById('lamp-legalitas').checked,
+          rab: document.getElementById('lamp-rab').checked,
+          dokumentasi: document.getElementById('lamp-dokumentasi').checked
+        };
+
+        const payload = {
+          id: existingId || `PROP-${new Date().getFullYear()}-${String(proposals.length + 1).padStart(3, '0')}-${Date.now().toString().slice(-3)}`,
+          nomorSurat: nomor,
+          tanggal,
+          jenisPengusul: document.getElementById('field-jenis-pengusul').value,
+          namaPengusul,
+          wilayah,
+          tujuanCamat,
+          ketua,
+          kontak: document.getElementById('field-kontak').value.trim(),
+          urusanNo: urusanObj.no,
+          urusanNama: urusanObj.nama,
+          subKegiatan: document.getElementById('field-subkegiatan').value,
+          judul,
+          mekanisme: document.getElementById('field-mekanisme').value,
+          seksiTujuan: document.getElementById('field-seksi').value,
+          kriteria,
+          urgensi,
+          anggota: Number(document.getElementById('field-anggota').value) || 0,
+          anggaran: Number(document.getElementById('field-anggaran').value) || 0,
+          lokasi: document.getElementById('field-lokasi').value.trim(),
+          swadaya: document.getElementById('field-swadaya').value.trim(),
+          lampiran,
+          status: targetStatus,
+          catatanVerifikator: existingId ? (proposals.find(x => x.id === existingId)?.catatanVerifikator || '') : '',
+          updatedAt: new Date().toISOString()
+        };
+
+        if (existingId) {
+          const idx = proposals.findIndex(x => x.id === existingId);
+          if (idx >= 0) proposals[idx] = payload;
+        } else {
+          proposals.unshift(payload);
+        }
+        saveLocalCache();
+
+        if (sb) {
+          try {
+            const { error } = await sb.from('proposals').upsert(toDbRow(payload));
+            if (error) throw error;
+            setDbBadge(true, 'Supabase Terhubung');
+            showToast(existingId ? 'Proposal diperbarui di database!' : 'Proposal tersimpan di database Supabase!');
+          } catch (e) {
+            showToast('Tersimpan di browser (gagal sinkron ke Supabase).', 'info');
+          }
+        } else {
+          showToast(targetStatus === 'Draft' ? 'Proposal disimpan sebagai Draft.' : 'Proposal berhasil diajukan!');
+        }
+
+        resetForm();
+        switchTab('dashboard');
+      }
+
+      function renderCatalog() {
+        const q = (document.getElementById('catalog-search').value || '').trim().toLowerCase();
+        const container = document.getElementById('catalog-list');
+        const filtered = PERBUP_URUSAN.filter(u => {
+          if (!q) return true;
+          return u.nama.toLowerCase().includes(q) || u.items.some(i => i.toLowerCase().includes(q));
+        });
+
+        if (filtered.length === 0) {
+          container.innerHTML = `<div class="p-8 text-center text-sm text-slate-500">Tidak ada urusan atau kegiatan yang cocok dengan "${escapeHtml(q)}".</div>`;
+          return;
+        }
+
+        container.innerHTML = filtered.map(u => `
+          <div class="p-4 sm:p-5 hover:bg-slate-50/70 transition-colors">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+              <div class="flex items-center gap-2.5">
+                <span class="w-7 h-7 rounded-lg bg-navy-700 text-white text-xs font-bold flex items-center justify-center shrink-0">${u.no}</span>
+                <h3 class="text-sm font-bold text-slate-900">${escapeHtml(u.nama)}</h3>
+              </div>
+              <button type="button" data-use-urusan="${u.no}" class="px-3 py-1.5 rounded-lg bg-navy-50 hover:bg-navy-100 text-navy-700 text-xs font-semibold transition-colors inline-flex items-center gap-1">
+                <i data-lucide="file-plus-2" class="w-3.5 h-3.5"></i>
+                Ajukan Kegiatan Ini
+              </button>
+            </div>
+            <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-xs text-slate-700 pl-9 list-disc">
+              ${u.items.map(it => `<li>${escapeHtml(it)}</li>`).join('')}
+            </ul>
+          </div>
+        `).join('');
+
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function openPreviewModal(id) {
+        const p = proposals.find(item => item.id === id);
+        if (!p) return;
+
+        const lampLabels = [
+          ['suratPermohonan', 'Surat Permohonan Resmi ke Camat'],
+          ['naskahProposal', 'Naskah Proposal Lengkap'],
+          ['legalitas', 'SK / Legalitas Kelompok & Daftar Anggota'],
+          ['rab', 'Rincian Anggaran Biaya (RAB)'],
+          ['dokumentasi', 'Dokumentasi Kondisi Eksisting / Titik Lokasi']
+        ];
+
+        const printArea = document.getElementById('print-area');
+        printArea.innerHTML = `
+          <div class="border-b-4 border-double border-slate-900 pb-3 text-center">
+            <p class="text-xs font-bold uppercase tracking-widest">${escapeHtml(p.jenisPengusul)}</p>
+            <h2 class="text-lg font-bold uppercase tracking-wide mt-0.5">${escapeHtml(p.namaPengusul)}</h2>
+            <p class="text-xs text-slate-600">Wilayah / Alamat: ${escapeHtml(p.wilayah)} ${p.kontak ? '• Telp/WA: ' + escapeHtml(p.kontak) : ''}</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row justify-between gap-4 text-xs pt-1">
+            <table class="border-collapse">
+              <tr><td class="pr-3 py-0.5 font-semibold">Nomor</td><td>: ${escapeHtml(p.nomorSurat)}</td></tr>
+              <tr><td class="pr-3 py-0.5 font-semibold">Lampiran</td><td>: ${countLampiran(p.lampiran)} Berkas</td></tr>
+              <tr><td class="pr-3 py-0.5 font-semibold">Perihal</td><td class="font-semibold">: Usulan Kegiatan Pelimpahan Kewenangan (Perbup No. 1/2026)</td></tr>
+            </table>
+            <div class="sm:text-right">
+              <p>${escapeHtml(p.wilayah)}, ${formatTanggal(p.tanggal)}</p>
+              <p class="mt-2 font-semibold">Kepada Yth.</p>
+              <p class="font-bold">Bapak/Ibu ${escapeHtml(p.tujuanCamat)}</p>
+              <p>di - Tempat</p>
+            </div>
+          </div>
+
+          <div class="space-y-2 pt-2">
+            <h3 class="font-bold text-sm uppercase border-b border-slate-300 pb-1">I. Judul & Rujukan Perbup Banggai No. 1 Tahun 2026</h3>
+            <p class="font-semibold text-slate-900">${escapeHtml(p.judul)}</p>
+            <p class="text-xs text-slate-700">
+              Mengacu pada Peraturan Bupati Banggai Nomor 1 Tahun 2026 tentang Pelimpahan Sebagian Kewenangan Bupati kepada Camat (Bab III Pasal 14–15 dan Bab IV Pasal 17–18).
+            </p>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-bold text-sm uppercase border-b border-slate-300 pb-1">II. Rincian Bidang Urusan & Mekanisme</h3>
+            <table class="w-full text-xs border border-slate-300 border-collapse">
+              <tbody>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50 w-1/3">Bidang Urusan (Lampiran)</td><td class="p-2">${p.urusanNo ? `${p.urusanNo}. ` : ''}${escapeHtml(p.urusanNama)}</td></tr>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50">Rincian Kegiatan Perbup</td><td class="p-2">${escapeHtml(p.subKegiatan)}</td></tr>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50">Mekanisme Pelaksanaan</td><td class="p-2">${escapeHtml(p.mekanisme)}</td></tr>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50">Seksi Penelaah Tujuan</td><td class="p-2">${escapeHtml(p.seksiTujuan)}</td></tr>
+                <tr><td class="p-2 font-semibold bg-slate-50 align-top">Kesesuaian Kriteria Pasal 17–18</td><td class="p-2">
+                  ${(p.kriteria && p.kriteria.length) ? `<ul class="list-disc pl-4 space-y-0.5">${p.kriteria.map(k => `<li>${escapeHtml(k)}</li>`).join('')}</ul>` : '-'}
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="font-bold text-sm uppercase border-b border-slate-300 pb-1">III. Latar Belakang, Tujuan & Manfaat</h3>
+            <p class="text-xs text-slate-800 whitespace-pre-line">${escapeHtml(p.urgensi)}</p>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="font-bold text-sm uppercase border-b border-slate-300 pb-1">IV. Sasaran, Lokasi & Rencana Anggaran (RAB)</h3>
+            <table class="w-full text-xs border border-slate-300 border-collapse">
+              <tbody>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50 w-1/3">Jumlah Anggota / Penerima Manfaat</td><td class="p-2">${Number(p.anggota) || 0} Orang</td></tr>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50">Lokasi Pelaksanaan</td><td class="p-2">${escapeHtml(p.lokasi || '-')}</td></tr>
+                <tr class="border-b border-slate-300"><td class="p-2 font-semibold bg-slate-50">Estimasi Nilai Usulan (RAB)</td><td class="p-2 font-semibold">${formatRupiah(p.anggaran)}</td></tr>
+                <tr><td class="p-2 font-semibold bg-slate-50">Swadaya & Rencana Pemeliharaan</td><td class="p-2">${escapeHtml(p.swadaya || '-')}</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="space-y-1.5">
+            <h3 class="font-bold text-sm uppercase border-b border-slate-300 pb-1">V. Kelengkapan Berkas Terlampir</h3>
+            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs">
+              ${lampLabels.map(([k, label]) => `
+                <li>${p.lampiran && p.lampiran[k] ? '☑' : '☐'} ${escapeHtml(label)}</li>
+              `).join('')}
+            </ul>
+          </div>
+
+          <div class="pt-6 flex justify-between items-end text-xs">
+            <div class="text-center w-56">
+              <p class="font-semibold">Mengetahui,</p>
+              <p>Kepala Desa / Lurah Setempat</p>
+              <div class="h-16"></div>
+              <p class="border-t border-slate-400 pt-1 text-slate-600">( ........................................ )</p>
+            </div>
+            <div class="text-center w-56">
+              <p>${escapeHtml(p.wilayah)}, ${formatTanggal(p.tanggal)}</p>
+              <p class="font-semibold mt-0.5">Ketua / Penanggung Jawab,</p>
+              <div class="h-16"></div>
+              <p class="font-bold underline">${escapeHtml(p.ketua)}</p>
+              <p class="text-[11px] text-slate-600">${escapeHtml(p.namaPengusul)}</p>
+            </div>
+          </div>
+        `;
+
+        document.getElementById('modal-preview').classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function openStatusModal(id) {
+        const p = proposals.find(item => item.id === id);
+        if (!p) return;
+        document.getElementById('status-proposal-id').value = p.id;
+        document.getElementById('status-proposal-title').textContent = `${p.namaPengusul} — ${p.judul}`;
+        document.getElementById('status-select').value = p.status;
+        document.getElementById('status-catatan').value = p.catatanVerifikator || '';
+        document.getElementById('modal-status').classList.remove('hidden');
+      }
+
+      function openDeleteModal(id) {
+        const p = proposals.find(item => item.id === id);
+        if (!p) return;
+        pendingDeleteId = id;
+        document.getElementById('delete-proposal-desc').textContent = `Proposal "${p.judul}" dari ${p.namaPengusul} akan dihapus dari database secara permanen.`;
+        document.getElementById('modal-delete').classList.remove('hidden');
+      }
+
+      function exportCSV() {
+        const headers = ['ID', 'Nomor Surat', 'Tanggal', 'Jenis Pengusul', 'Nama Pengusul', 'Wilayah', 'No Urusan', 'Bidang Urusan', 'Sub Kegiatan Perbup', 'Judul Proposal', 'Mekanisme', 'Seksi Penelaah', 'Penerima Manfaat', 'Estimasi RAB', 'Status'];
+        const escapeCsv = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+        const lines = [headers.map(escapeCsv).join(',')];
+        proposals.forEach(p => {
+          lines.push([
+            p.id, p.nomorSurat, p.tanggal, p.jenisPengusul, p.namaPengusul, p.wilayah,
+            p.urusanNo, p.urusanNama, p.subKegiatan, p.judul, p.mekanisme, p.seksiTujuan,
+            p.anggota, p.anggaran, p.status
+          ].map(escapeCsv).join(','));
+        });
+        const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `rekap-proposal-perbup-1-2026-${new Date().toISOString().slice(0, 10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Rekap CSV berhasil diunduh.');
+      }
+
+      function exportJSON() {
+        const blob = new Blob([JSON.stringify(proposals, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-proposal-perbup-1-2026-${new Date().toISOString().slice(0, 10)}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Cadangan JSON berhasil diunduh.');
+      }
+
+      function bindEvents() {
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+          btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        document.getElementById('btn-new-shortcut').addEventListener('click', () => {
+          resetForm();
+          switchTab('form');
+        });
+
+        document.getElementById('btn-sync-db').addEventListener('click', () => syncFromSupabase(false));
+        document.getElementById('btn-seed-samples').addEventListener('click', seedSamplesToDb);
+
+        document.getElementById('search-input').addEventListener('input', renderTable);
+        document.getElementById('filter-status').addEventListener('change', renderTable);
+        document.getElementById('filter-kategori').addEventListener('change', renderTable);
+        document.getElementById('catalog-search').addEventListener('input', renderCatalog);
+
+        document.getElementById('catalog-list').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-use-urusan]');
+          if (!btn) return;
+          const no = Number(btn.dataset.useUrusan);
+          resetForm();
+          populateUrusanDropdown(no);
+          switchTab('form');
+          showToast(`Urusan No. ${no} dipilih pada formulir.`);
+        });
+
+        document.getElementById('field-urusan').addEventListener('change', (e) => {
+          populateSubkegiatanDropdown(e.target.value);
+        });
+
+        document.getElementById('proposal-table-body').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-action]');
+          if (!btn) return;
+          const { action, id } = btn.dataset;
+          if (action === 'preview') openPreviewModal(id);
+          else if (action === 'status') openStatusModal(id);
+          else if (action === 'edit') loadProposalToForm(id);
+          else if (action === 'delete') openDeleteModal(id);
+        });
+
+        document.querySelectorAll('.lampiran-chk').forEach(chk => {
+          chk.addEventListener('change', updateLampiranBadge);
+        });
+
+        document.getElementById('btn-reset-form').addEventListener('click', resetForm);
+        document.getElementById('btn-save-draft').addEventListener('click', () => saveProposalFromForm('Draft'));
+        document.getElementById('proposal-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          saveProposalFromForm('Diajukan');
+        });
+
+        document.getElementById('btn-close-preview').addEventListener('click', () => {
+          document.getElementById('modal-preview').classList.add('hidden');
+        });
+        document.getElementById('btn-print-proposal').addEventListener('click', () => window.print());
+
+        document.getElementById('btn-close-status').addEventListener('click', () => {
+          document.getElementById('modal-status').classList.add('hidden');
+        });
+        document.getElementById('btn-cancel-status').addEventListener('click', () => {
+          document.getElementById('modal-status').classList.add('hidden');
+        });
+        document.getElementById('status-form').addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const id = document.getElementById('status-proposal-id').value;
+          const p = proposals.find(item => item.id === id);
+          if (p) {
+            p.status = document.getElementById('status-select').value;
+            p.catatanVerifikator = document.getElementById('status-catatan').value.trim();
+            p.updatedAt = new Date().toISOString();
+            saveLocalCache();
+            if (sb) {
+              try {
+                const { error } = await sb
+                  .from('proposals')
+                  .update({
+                    status: p.status,
+                    catatan_verifikator: p.catatanVerifikator,
+                    updated_at: p.updatedAt
+                  })
+                  .eq('id', id);
+                if (error) throw error;
+              } catch (err) {
+                showToast('Status diubah lokal (gagal sinkron ke Supabase).', 'info');
+              }
+            }
+            renderDashboard();
+            showToast('Status & disposisi diperbarui.');
+          }
+          document.getElementById('modal-status').classList.add('hidden');
+        });
+
+        document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+          pendingDeleteId = null;
+          document.getElementById('modal-delete').classList.add('hidden');
+        });
+        document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+          if (pendingDeleteId) {
+            const targetId = pendingDeleteId;
+            proposals = proposals.filter(item => item.id !== targetId);
+            saveLocalCache();
+            if (sb) {
+              try {
+                const { error } = await sb.from('proposals').delete().eq('id', targetId);
+                if (error) throw error;
+              } catch (err) {
+                showToast('Dihapus lokal (gagal hapus di Supabase).', 'info');
+              }
+            }
+            renderDashboard();
+            showToast('Proposal berhasil dihapus.', 'info');
+          }
+          pendingDeleteId = null;
+          document.getElementById('modal-delete').classList.add('hidden');
+        });
+
+        document.getElementById('btn-export-csv').addEventListener('click', exportCSV);
+        document.getElementById('btn-export-json').addEventListener('click', exportJSON);
+        document.getElementById('input-import-json').addEventListener('change', async (e) => {
+          const file = e.target.files && e.target.files[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = async () => {
+            try {
+              const data = JSON.parse(reader.result);
+              if (!Array.isArray(data)) throw new Error('Format tidak valid');
+              proposals = data;
+              saveLocalCache();
+              if (sb && data.length > 0) {
+                await sb.from('proposals').upsert(data.map(toDbRow));
+              }
+              renderDashboard();
+              showToast(`Berhasil mengimpor ${data.length} proposal.`);
+            } catch (err) {
+              showToast('File JSON tidak valid.', 'error');
+            }
+            e.target.value = '';
+          };
+          reader.readAsText(file);
+        });
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        proposals = loadLocalCache();
+        resetForm();
+        bindEvents();
+        renderDashboard();
+        renderCatalog();
+        if (window.lucide) lucide.createIcons();
+        syncFromSupabase(true);
+      });
+    })();
+  </script>
+</body>
+</html>
