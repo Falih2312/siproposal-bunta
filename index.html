@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SiProposal — Pengajuan Usulan Pelimpahan Kewenangan ke Camat Bunta</title>
+  <title>SiProposal — Pengajuan & Pelacakan Usulan Kecamatan Bunta</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -62,28 +62,46 @@
           </div>
           <div class="min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
-              <h1 class="text-sm sm:text-base font-bold tracking-tight truncate">SiProposal — Usulan Pelimpahan Kewenangan ke Camat</h1>
+              <h1 class="text-sm sm:text-base font-bold tracking-tight truncate">SiProposal — Kecamatan Bunta</h1>
               <span id="db-status-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-slate-700 text-slate-200">
                 <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
                 Menghubungkan DB...
               </span>
+              <span id="role-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/20 text-blue-200 border border-blue-400/30">
+                Mode Pengusul
+              </span>
             </div>
-            <p class="text-xs text-slate-300 truncate">Perbup Banggai No. 1 Tahun 2026 • Kecamatan Bunta</p>
+            <p class="text-xs text-slate-300 truncate">Perbup Banggai No. 1 Tahun 2026 • Kabupaten Banggai</p>
           </div>
         </div>
 
         <nav class="flex items-center gap-1.5 sm:gap-2 overflow-x-auto max-w-full" aria-label="Navigasi Utama">
-          <button type="button" data-tab="dashboard" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap bg-white/15 text-white">
-            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-            <span>Dasbor & Pelacakan</span>
+          <!-- Pengusul Nav -->
+          <button type="button" data-tab="tracker" id="nav-tracker" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap bg-white/15 text-white">
+            <i data-lucide="search-check" class="w-4 h-4"></i>
+            <span>Lacak Usulan Saya</span>
           </button>
-          <button type="button" data-tab="form" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
+
+          <!-- Admin Nav (hidden unless logged in) -->
+          <button type="button" data-tab="dashboard" id="nav-dashboard" class="nav-tab hidden px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+            <span>Rekap Semua Usulan</span>
+          </button>
+
+          <button type="button" data-tab="form" id="nav-form" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
             <i data-lucide="file-plus-2" class="w-4 h-4"></i>
             <span id="form-tab-label">Ajukan Proposal</span>
           </button>
-          <button type="button" data-tab="regulasi" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
+
+          <button type="button" data-tab="regulasi" id="nav-regulasi" class="nav-tab px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap text-slate-200 hover:bg-white/10">
             <i data-lucide="book-open-check" class="w-4 h-4"></i>
             <span>Katalog 22 Urusan</span>
+          </button>
+
+          <!-- Login / Logout Button -->
+          <button type="button" id="btn-auth-action" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap bg-amber-500 hover:bg-amber-600 text-slate-950 ml-1">
+            <i data-lucide="shield-check" class="w-4 h-4"></i>
+            <span id="auth-btn-label">Login Admin</span>
           </button>
         </nav>
       </div>
@@ -93,28 +111,98 @@
   <!-- Main Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
 
-    <!-- Banner Info -->
-    <div class="bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs sm:text-sm text-blue-900">
-      <div class="flex items-start sm:items-center gap-2.5">
-        <i data-lucide="info" class="w-4 h-4 text-blue-600 shrink-0 mt-0.5 sm:mt-0"></i>
-        <span>
-          Mengacu pada <strong>Perbup Banggai No. 1 Tahun 2026</strong> (22 Urusan Pemerintahan yang dilimpahkan ke Camat, Pasal 15 tentang usulan prioritas, serta Pasal 17–18 tentang Swakelola & Kelompok Masyarakat).
-        </span>
+    <!-- TAB 0: HALAMAN PENGUSUL — LACAK JEJAK USULAN SAYA -->
+    <section id="tab-tracker" class="space-y-6">
+      <!-- Hero Banner Pengusul -->
+      <div class="bg-gradient-to-r from-navy-800 to-navy-700 text-white rounded-2xl p-6 sm:p-8 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div class="space-y-2 max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-400/20 text-amber-300 border border-amber-400/30">
+            Portal Pengusul • Kelompok, Desa/Kelurahan & Lembaga
+          </span>
+          <h2 class="text-xl sm:text-2xl font-bold tracking-tight">Ajukan & Pantau Jejak Proposal Anda ke Camat Bunta</h2>
+          <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+            Mengacu pada <strong>Perbup Banggai No. 1 Tahun 2026</strong> (22 Urusan Pemerintahan & Pasal 17–18). Demi privasi, pengusul hanya dapat melihat riwayat dan status usulan miliknya sendiri menggunakan Kode Tracking atau Nomor Surat.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <button type="button" id="btn-pengusul-ajukan" class="px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-950 text-sm font-bold shadow-sm transition-colors inline-flex items-center gap-2">
+            <i data-lucide="file-plus-2" class="w-4 h-4"></i>
+            Buat Proposal Baru
+          </button>
+          <button type="button" id="btn-pengusul-katalog" class="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-medium border border-white/20 transition-colors inline-flex items-center gap-2">
+            <i data-lucide="book-open" class="w-4 h-4"></i>
+            Lihat 22 Urusan
+          </button>
+        </div>
       </div>
-      <div class="flex items-center gap-2 shrink-0">
-        <button type="button" id="btn-sync-db" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-slate-100 text-navy-700 border border-blue-200 text-xs font-medium transition-colors">
-          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
-          Muat Ulang DB
-        </button>
-        <button type="button" id="btn-new-shortcut" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-navy-700 hover:bg-navy-800 text-white text-xs font-medium transition-colors">
-          <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-          Ajukan Proposal Baru
-        </button>
-      </div>
-    </div>
 
-    <!-- TAB 1: DASHBOARD & PELACAKAN -->
-    <section id="tab-dashboard" class="space-y-6">
+      <!-- Kotak Pencarian Jejak Usulan -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 sm:p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">Lacak Status & Disposisi Proposal Anda</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Masukkan <strong>Kode Tracking</strong> (contoh: <code class="bg-slate-100 px-1.5 py-0.5 rounded">PROP-2026-001</code>) atau <strong>Nomor Surat</strong> permohonan Anda.</p>
+          </div>
+          <button type="button" id="btn-sync-tracker" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            Perbarui Status
+          </button>
+        </div>
+
+        <form id="tracker-search-form" class="flex flex-col sm:flex-row gap-2.5">
+          <div class="relative flex-1">
+            <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input id="tracker-query-input" type="text" placeholder="Ketik Kode Tracking (PROP-2026-...) atau Nomor Surat..." class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-600" />
+          </div>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-navy-700 hover:bg-navy-800 text-white text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 shrink-0">
+            <i data-lucide="radar" class="w-4 h-4"></i>
+            Lacak Proposal
+          </button>
+        </form>
+
+        <!-- Hasil Pencarian Tracking -->
+        <div id="tracker-search-result" class="hidden pt-2">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Riwayat Usulan dari Perangkat Ini -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Jejak Usulan Saya (Dari Perangkat Ini)</h3>
+            <p class="text-xs text-slate-500 mt-0.5">Daftar proposal yang pernah Anda kirim atau simpan dari perangkat ini beserta progres disposisi Camat.</p>
+          </div>
+          <span id="my-proposals-count" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-navy-50 text-navy-700">0 Usulan</span>
+        </div>
+        <div id="my-proposals-list" class="divide-y divide-slate-200">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 1: DASHBOARD ADMIN KECAMATAN (REKAP SELURUH USULAN) -->
+    <section id="tab-dashboard" class="hidden space-y-6">
+      <!-- Admin Header Banner -->
+      <div class="bg-navy-900 text-white rounded-xl px-5 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 text-xs sm:text-sm">
+          <i data-lucide="shield-check" class="w-5 h-5 text-amber-400 shrink-0"></i>
+          <span>
+            <strong>Dasbor Admin Kecamatan Bunta</strong> — Menampilkan rekapitulasi seluruh usulan masuk dari semua kelompok, desa/kelurahan, dan lembaga.
+          </span>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" id="btn-sync-db" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">
+            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+            Muat Ulang DB
+          </button>
+          <button type="button" id="btn-new-shortcut" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-semibold transition-colors">
+            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
+            Input Usulan
+          </button>
+        </div>
+      </div>
+
       <!-- KPI Cards -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
@@ -123,7 +211,7 @@
             <span class="p-2 rounded-lg bg-slate-100 text-slate-600"><i data-lucide="folder-kanban" class="w-4 h-4"></i></span>
           </div>
           <p id="kpi-total" class="text-2xl font-bold text-slate-900 mt-2">0</p>
-          <p class="text-xs text-slate-500 mt-1">Dari kelompok, desa/kelurahan & lembaga</p>
+          <p class="text-xs text-slate-500 mt-1">Seluruh kelompok, desa & lembaga</p>
         </div>
 
         <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
@@ -225,12 +313,12 @@
           <table class="w-full text-left border-collapse">
             <thead>
               <tr class="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                <th class="py-3 px-4">No. Surat & Tanggal</th>
+                <th class="py-3 px-4">Kode & No. Surat</th>
                 <th class="py-3 px-4">Pengusul & Wilayah</th>
                 <th class="py-3 px-4">Judul & Bidang Urusan (Perbup 1/2026)</th>
                 <th class="py-3 px-4">RAB & Berkas</th>
                 <th class="py-3 px-4">Status</th>
-                <th class="py-3 px-4 text-right">Aksi</th>
+                <th class="py-3 px-4 text-right">Aksi Admin</th>
               </tr>
             </thead>
             <tbody id="proposal-table-body" class="divide-y divide-slate-200 text-sm">
@@ -500,6 +588,40 @@
 
   </main>
 
+  <!-- MODAL: LOGIN ADMIN KECAMATAN -->
+  <div id="modal-login" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 no-print">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
+      <div class="px-5 py-4 bg-navy-800 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i data-lucide="lock" class="w-4 h-4 text-amber-300"></i>
+          <h3 class="text-sm font-bold">Login Admin Kecamatan Bunta</h3>
+        </div>
+        <button type="button" id="btn-close-login" class="text-slate-300 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <form id="login-form" class="p-5 space-y-4">
+        <p class="text-xs text-slate-600">Masuk untuk melihat rekap seluruh usulan kecamatan, memberi disposisi, dan mengelola data.</p>
+        <div>
+          <label for="login-username" class="block text-xs font-semibold text-slate-700 mb-1">Username Admin</label>
+          <input id="login-username" type="text" required autocomplete="username" placeholder="Masukkan username" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+        </div>
+        <div>
+          <label for="login-password" class="block text-xs font-semibold text-slate-700 mb-1">Password</label>
+          <input id="login-password" type="password" required autocomplete="current-password" placeholder="Masukkan password" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-navy-600" />
+        </div>
+        <div id="login-error" class="hidden text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+          Username atau password salah.
+        </div>
+        <div class="flex justify-end gap-2 pt-1">
+          <button type="button" id="btn-cancel-login" class="px-4 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Batal</button>
+          <button type="submit" class="px-4 py-2 text-xs font-semibold text-white bg-navy-700 hover:bg-navy-800 rounded-lg inline-flex items-center gap-1.5">
+            <i data-lucide="log-in" class="w-3.5 h-3.5"></i>
+            Masuk Admin
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- MODAL: PRATINJAU & CETAK PROPOSAL -->
   <div id="modal-preview" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs overflow-y-auto p-4 sm:p-6">
     <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl overflow-hidden my-4">
@@ -524,7 +646,7 @@
     </div>
   </div>
 
-  <!-- MODAL: UPDATE STATUS VERIFIKASI / DISPOSISI -->
+  <!-- MODAL: UPDATE STATUS VERIFIKASI / DISPOSISI (ADMIN ONLY) -->
   <div id="modal-status" class="fixed inset-0 z-50 hidden bg-slate-900/60 flex items-center justify-center p-4 no-print">
     <div class="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
       <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
@@ -558,7 +680,7 @@
     </div>
   </div>
 
-  <!-- MODAL: KONFIRMASI HAPUS -->
+  <!-- MODAL: KONFIRMASI HAPUS (ADMIN ONLY) -->
   <div id="modal-delete" class="fixed inset-0 z-50 hidden bg-slate-900/60 flex items-center justify-center p-4 no-print">
     <div class="bg-white rounded-xl shadow-xl max-w-sm w-full p-5 space-y-4">
       <div class="flex items-start gap-3">
@@ -583,9 +705,17 @@
       const SUPABASE_URL = 'https://rfebdkrrhacszynsjsjn.supabase.co';
       const SUPABASE_KEY = 'sb_publishable_e9CPC-fdfJQpLFO3ZKvE7w_Idr7eWu_';
       const STORAGE_KEY = 'bunta_proposal_perbup1_2026_v1';
+      const MY_IDS_KEY = 'bunta_my_proposal_ids_v1';
+      const ADMIN_SESSION_KEY = 'bunta_admin_session_v1';
+
+      // Akun bawaan Admin Kecamatan (bisa diganti/ditambah lewat tabel admin_accounts di Supabase)
+      const DEFAULT_ADMIN_USER = 'adminbunta';
+      const DEFAULT_ADMIN_PASS = 'Bunta2026!';
 
       let sb = null;
       let dbConnected = false;
+      let isAdmin = false;
+      let myProposalIds = [];
 
       if (window.supabase && typeof window.supabase.createClient === 'function') {
         try {
@@ -994,6 +1124,70 @@
       let kategoriChart = null;
       let pendingDeleteId = null;
 
+      function loadMyIds() {
+        try {
+          const raw = localStorage.getItem(MY_IDS_KEY);
+          const arr = raw ? JSON.parse(raw) : [];
+          return Array.isArray(arr) ? arr : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function registerMyId(id) {
+        if (!id) return;
+        if (!myProposalIds.includes(id)) {
+          myProposalIds.unshift(id);
+          try {
+            localStorage.setItem(MY_IDS_KEY, JSON.stringify(myProposalIds));
+          } catch (e) {
+            // Ignore
+          }
+        }
+      }
+
+      function loadAdminSession() {
+        try {
+          return localStorage.getItem(ADMIN_SESSION_KEY) === 'true';
+        } catch (e) {
+          return false;
+        }
+      }
+
+      function saveAdminSession(val) {
+        isAdmin = Boolean(val);
+        try {
+          localStorage.setItem(ADMIN_SESSION_KEY, isAdmin ? 'true' : 'false');
+        } catch (e) {
+          // Ignore
+        }
+        applyRoleUI();
+      }
+
+      function applyRoleUI() {
+        const navDash = document.getElementById('nav-dashboard');
+        const navTracker = document.getElementById('nav-tracker');
+        const roleBadge = document.getElementById('role-badge');
+        const authBtn = document.getElementById('btn-auth-action');
+        const authLabel = document.getElementById('auth-btn-label');
+
+        if (isAdmin) {
+          navDash.classList.remove('hidden');
+          navTracker.classList.add('hidden');
+          roleBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-400/20 text-amber-200 border border-amber-400/30';
+          roleBadge.textContent = 'Admin Kecamatan';
+          authBtn.className = 'px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap bg-rose-500 hover:bg-rose-600 text-white ml-1';
+          authLabel.textContent = 'Logout Admin';
+        } else {
+          navDash.classList.add('hidden');
+          navTracker.classList.remove('hidden');
+          roleBadge.className = 'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/20 text-blue-200 border border-blue-400/30';
+          roleBadge.textContent = 'Mode Pengusul';
+          authBtn.className = 'px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap bg-amber-500 hover:bg-amber-600 text-slate-950 ml-1';
+          authLabel.textContent = 'Login Admin';
+        }
+      }
+
       function setDbBadge(connected, labelText) {
         dbConnected = connected;
         const badge = document.getElementById('db-status-badge');
@@ -1003,7 +1197,7 @@
           badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>${escapeHtml(labelText || 'Supabase Terhubung')}`;
         } else {
           badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/20 text-amber-200 border border-amber-400/30';
-          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>${escapeHtml(labelText || 'Mode Lokal (Cache)')}`;
+          badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>${escapeHtml(labelText || 'Mode Lokal')}`;
         }
       }
 
@@ -1071,7 +1265,7 @@
         try {
           localStorage.setItem(STORAGE_KEY, JSON.stringify(proposals));
         } catch (e) {
-          // Ignore storage error
+          // Ignore
         }
       }
 
@@ -1104,7 +1298,8 @@
           setDbBadge(true, 'Supabase Terhubung');
           proposals = (data || []).map(fromDbRow);
           saveLocalCache();
-          renderDashboard();
+          renderMyProposals();
+          if (isAdmin) renderDashboard();
           if (!silent) showToast('Data berhasil disinkronkan dari Supabase.');
         } catch (err) {
           setDbBadge(false, 'Mode Lokal (Offline)');
@@ -1113,6 +1308,7 @@
       }
 
       async function seedSamplesToDb() {
+        if (!isAdmin) return;
         const samples = JSON.parse(JSON.stringify(INITIAL_SAMPLES));
         proposals = samples;
         saveLocalCache();
@@ -1173,16 +1369,21 @@
       }
 
       function switchTab(tabName) {
+        if (tabName === 'dashboard' && !isAdmin) {
+          openLoginModal();
+          return;
+        }
         document.querySelectorAll('.nav-tab').forEach(btn => {
           const active = btn.dataset.tab === tabName;
           btn.classList.toggle('bg-white/15', active);
           btn.classList.toggle('text-white', active);
           btn.classList.toggle('text-slate-200', !active);
         });
-        ['dashboard', 'form', 'regulasi'].forEach(name => {
+        ['tracker', 'dashboard', 'form', 'regulasi'].forEach(name => {
           const el = document.getElementById(`tab-${name}`);
           if (el) el.classList.toggle('hidden', name !== tabName);
         });
+        if (tabName === 'tracker') renderMyProposals();
         if (tabName === 'dashboard') renderDashboard();
         if (tabName === 'regulasi') renderCatalog();
       }
@@ -1204,6 +1405,115 @@
         return Object.values(lampiran).filter(Boolean).length;
       }
 
+      function renderTrackingCard(p) {
+        const stages = ['Diajukan', 'Disposisi Seksi', 'Disetujui'];
+        let stepIdx = 0;
+        if (p.status === 'Draft') stepIdx = -1;
+        else if (p.status === 'Diajukan') stepIdx = 0;
+        else if (p.status === 'Disposisi Seksi' || p.status === 'Perlu Perbaikan') stepIdx = 1;
+        else if (p.status === 'Disetujui') stepIdx = 2;
+
+        return `
+          <div class="p-4 sm:p-5 space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div class="space-y-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-xs font-semibold">${escapeHtml(p.id)}</span>
+                  <span class="text-xs text-slate-500">No. Surat: <strong>${escapeHtml(p.nomorSurat)}</strong></span>
+                  <span class="text-xs text-slate-500">• ${formatTanggal(p.tanggal)}</span>
+                </div>
+                <h4 class="text-sm sm:text-base font-bold text-slate-900">${escapeHtml(p.judul)}</h4>
+                <p class="text-xs text-slate-600">${escapeHtml(p.namaPengusul)} (${escapeHtml(p.wilayah)}) • ${p.urusanNo ? `${p.urusanNo}. ` : ''}${escapeHtml(p.urusanNama)}</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0">
+                ${getStatusBadge(p.status)}
+                <button type="button" data-tracker-preview="${escapeHtml(p.id)}" class="px-3 py-1.5 rounded-lg bg-navy-50 hover:bg-navy-100 text-navy-700 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors">
+                  <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                  Cetak Surat
+                </button>
+              </div>
+            </div>
+
+            <!-- Progress Jejak -->
+            <div class="grid grid-cols-3 gap-2 pt-1">
+              ${stages.map((st, i) => {
+                const done = i <= stepIdx;
+                const isIssue = p.status === 'Perlu Perbaikan' && i === 1;
+                const barCls = isIssue ? 'bg-rose-500' : (done ? 'bg-emerald-500' : 'bg-slate-200');
+                const txtCls = isIssue ? 'text-rose-700 font-semibold' : (done ? 'text-emerald-700 font-semibold' : 'text-slate-400');
+                return `
+                  <div>
+                    <div class="h-1.5 rounded-full ${barCls}"></div>
+                    <p class="text-[11px] mt-1 ${txtCls}">${isIssue ? 'Perlu Perbaikan' : st}</p>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+
+            ${p.catatanVerifikator ? `
+              <div class="bg-amber-50 border border-amber-200 rounded-lg px-3.5 py-2.5 text-xs text-amber-900">
+                <strong class="block text-amber-950 mb-0.5">Catatan Disposisi / Verifikasi Kecamatan:</strong>
+                ${escapeHtml(p.catatanVerifikator)}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      function renderMyProposals() {
+        const listEl = document.getElementById('my-proposals-list');
+        const countEl = document.getElementById('my-proposals-count');
+        const mine = proposals.filter(p => myProposalIds.includes(p.id));
+        countEl.textContent = `${mine.length} Usulan`;
+
+        if (mine.length === 0) {
+          listEl.innerHTML = `
+            <div class="p-8 text-center text-xs sm:text-sm text-slate-500">
+              Belum ada usulan yang dikirim dari perangkat ini. Gunakan kotak pencarian di atas untuk melacak usulan dengan <strong>Kode Tracking</strong> atau <strong>Nomor Surat</strong>, atau klik <strong>Buat Proposal Baru</strong>.
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = mine.map(renderTrackingCard).join('');
+        if (window.lucide) lucide.createIcons();
+      }
+
+      function handleTrackerSearch(e) {
+        e.preventDefault();
+        const q = (document.getElementById('tracker-query-input').value || '').trim().toLowerCase();
+        const resultBox = document.getElementById('tracker-search-result');
+        if (!q) {
+          resultBox.classList.add('hidden');
+          showToast('Masukkan Kode Tracking atau Nomor Surat terlebih dahulu.', 'error');
+          return;
+        }
+
+        const matches = proposals.filter(p =>
+          (p.id || '').toLowerCase() === q ||
+          (p.nomorSurat || '').toLowerCase() === q ||
+          (p.id || '').toLowerCase().includes(q) ||
+          (p.nomorSurat || '').toLowerCase().includes(q)
+        );
+
+        resultBox.classList.remove('hidden');
+        if (matches.length === 0) {
+          resultBox.innerHTML = `
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
+              Tidak ditemukan proposal dengan Kode Tracking atau Nomor Surat <strong>"${escapeHtml(q)}"</strong>. Periksa kembali penulisan kode Anda.
+            </div>
+          `;
+          return;
+        }
+
+        resultBox.innerHTML = `
+          <div class="rounded-xl border border-navy-200 bg-navy-50/30 divide-y divide-slate-200">
+            ${matches.map(renderTrackingCard).join('')}
+          </div>
+        `;
+        if (window.lucide) lucide.createIcons();
+      }
+
       function getFilteredProposals() {
         const q = (document.getElementById('search-input').value || '').trim().toLowerCase();
         const st = document.getElementById('filter-status').value;
@@ -1211,6 +1521,7 @@
 
         return proposals.filter(p => {
           const matchQ = !q ||
+            (p.id || '').toLowerCase().includes(q) ||
             (p.namaPengusul || '').toLowerCase().includes(q) ||
             (p.wilayah || '').toLowerCase().includes(q) ||
             (p.judul || '').toLowerCase().includes(q) ||
@@ -1316,7 +1627,8 @@
           return `
             <tr class="hover:bg-slate-50/80 transition-colors">
               <td class="py-3.5 px-4 align-top whitespace-nowrap">
-                <div class="font-semibold text-slate-900 text-xs">${escapeHtml(p.nomorSurat)}</div>
+                <div class="font-mono text-[11px] font-semibold text-navy-700">${escapeHtml(p.id)}</div>
+                <div class="font-semibold text-slate-900 text-xs mt-0.5">${escapeHtml(p.nomorSurat)}</div>
                 <div class="text-xs text-slate-500 mt-0.5">${formatTanggal(p.tanggal)}</div>
               </td>
               <td class="py-3.5 px-4 align-top">
@@ -1361,6 +1673,7 @@
       }
 
       function renderDashboard() {
+        if (!isAdmin) return;
         renderKPIs();
         renderCharts();
         renderTable();
@@ -1419,6 +1732,7 @@
       }
 
       function loadProposalToForm(id) {
+        if (!isAdmin) return;
         const p = proposals.find(item => item.id === id);
         if (!p) return;
         document.getElementById('field-id').value = p.id;
@@ -1484,8 +1798,9 @@
           dokumentasi: document.getElementById('lamp-dokumentasi').checked
         };
 
+        const generatedId = existingId || `PROP-${new Date().getFullYear()}-${Date.now().toString().slice(-5)}`;
         const payload = {
-          id: existingId || `PROP-${new Date().getFullYear()}-${String(proposals.length + 1).padStart(3, '0')}-${Date.now().toString().slice(-3)}`,
+          id: generatedId,
           nomorSurat: nomor,
           tanggal,
           jenisPengusul: document.getElementById('field-jenis-pengusul').value,
@@ -1518,6 +1833,7 @@
         } else {
           proposals.unshift(payload);
         }
+        registerMyId(payload.id);
         saveLocalCache();
 
         if (sb) {
@@ -1525,16 +1841,16 @@
             const { error } = await sb.from('proposals').upsert(toDbRow(payload));
             if (error) throw error;
             setDbBadge(true, 'Supabase Terhubung');
-            showToast(existingId ? 'Proposal diperbarui di database!' : 'Proposal tersimpan di database Supabase!');
+            showToast(`Tersimpan di database! Kode Tracking Anda: ${payload.id}`);
           } catch (e) {
-            showToast('Tersimpan di browser (gagal sinkron ke Supabase).', 'info');
+            showToast(`Tersimpan lokal. Kode Tracking: ${payload.id}`, 'info');
           }
         } else {
-          showToast(targetStatus === 'Draft' ? 'Proposal disimpan sebagai Draft.' : 'Proposal berhasil diajukan!');
+          showToast(`Proposal disimpan! Kode Tracking: ${payload.id}`);
         }
 
         resetForm();
-        switchTab('dashboard');
+        switchTab(isAdmin ? 'dashboard' : 'tracker');
       }
 
       function renderCatalog() {
@@ -1593,7 +1909,8 @@
 
           <div class="flex flex-col sm:flex-row justify-between gap-4 text-xs pt-1">
             <table class="border-collapse">
-              <tr><td class="pr-3 py-0.5 font-semibold">Nomor</td><td>: ${escapeHtml(p.nomorSurat)}</td></tr>
+              <tr><td class="pr-3 py-0.5 font-semibold">Kode Tracking</td><td>: ${escapeHtml(p.id)}</td></tr>
+              <tr><td class="pr-3 py-0.5 font-semibold">Nomor Surat</td><td>: ${escapeHtml(p.nomorSurat)}</td></tr>
               <tr><td class="pr-3 py-0.5 font-semibold">Lampiran</td><td>: ${countLampiran(p.lampiran)} Berkas</td></tr>
               <tr><td class="pr-3 py-0.5 font-semibold">Perihal</td><td class="font-semibold">: Usulan Kegiatan Pelimpahan Kewenangan (Perbup No. 1/2026)</td></tr>
             </table>
@@ -1675,7 +1992,50 @@
         if (window.lucide) lucide.createIcons();
       }
 
+      function openLoginModal() {
+        document.getElementById('login-form').reset();
+        document.getElementById('login-error').classList.add('hidden');
+        document.getElementById('modal-login').classList.remove('hidden');
+        setTimeout(() => document.getElementById('login-username').focus(), 50);
+      }
+
+      async function handleLoginSubmit(e) {
+        e.preventDefault();
+        const u = document.getElementById('login-username').value.trim();
+        const p = document.getElementById('login-password').value;
+        const errBox = document.getElementById('login-error');
+
+        let matched = (u === DEFAULT_ADMIN_USER && p === DEFAULT_ADMIN_PASS);
+
+        if (!matched && sb) {
+          try {
+            const { data, error } = await sb
+              .from('admin_accounts')
+              .select('username, password')
+              .eq('username', u)
+              .limit(1);
+            if (!error && data && data.length > 0 && data[0].password === p) {
+              matched = true;
+            }
+          } catch (err) {
+            // Fallback to default credential check
+          }
+        }
+
+        if (!matched) {
+          errBox.classList.remove('hidden');
+          return;
+        }
+
+        errBox.classList.add('hidden');
+        document.getElementById('modal-login').classList.add('hidden');
+        saveAdminSession(true);
+        switchTab('dashboard');
+        showToast('Berhasil login sebagai Admin Kecamatan Bunta.');
+      }
+
       function openStatusModal(id) {
+        if (!isAdmin) return;
         const p = proposals.find(item => item.id === id);
         if (!p) return;
         document.getElementById('status-proposal-id').value = p.id;
@@ -1686,6 +2046,7 @@
       }
 
       function openDeleteModal(id) {
+        if (!isAdmin) return;
         const p = proposals.find(item => item.id === id);
         if (!p) return;
         pendingDeleteId = id;
@@ -1728,6 +2089,37 @@
       function bindEvents() {
         document.querySelectorAll('.nav-tab').forEach(btn => {
           btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        document.getElementById('btn-auth-action').addEventListener('click', () => {
+          if (isAdmin) {
+            saveAdminSession(false);
+            switchTab('tracker');
+            showToast('Anda telah keluar dari mode Admin.', 'info');
+          } else {
+            openLoginModal();
+          }
+        });
+
+        document.getElementById('btn-close-login').addEventListener('click', () => {
+          document.getElementById('modal-login').classList.add('hidden');
+        });
+        document.getElementById('btn-cancel-login').addEventListener('click', () => {
+          document.getElementById('modal-login').classList.add('hidden');
+        });
+        document.getElementById('login-form').addEventListener('submit', handleLoginSubmit);
+
+        document.getElementById('btn-pengusul-ajukan').addEventListener('click', () => {
+          resetForm();
+          switchTab('form');
+        });
+        document.getElementById('btn-pengusul-katalog').addEventListener('click', () => switchTab('regulasi'));
+        document.getElementById('btn-sync-tracker').addEventListener('click', () => syncFromSupabase(false));
+        document.getElementById('tracker-search-form').addEventListener('submit', handleTrackerSearch);
+
+        document.getElementById('tab-tracker').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-tracker-preview]');
+          if (btn) openPreviewModal(btn.dataset.trackerPreview);
         });
 
         document.getElementById('btn-new-shortcut').addEventListener('click', () => {
@@ -1791,6 +2183,7 @@
         });
         document.getElementById('status-form').addEventListener('submit', async (e) => {
           e.preventDefault();
+          if (!isAdmin) return;
           const id = document.getElementById('status-proposal-id').value;
           const p = proposals.find(item => item.id === id);
           if (p) {
@@ -1824,6 +2217,7 @@
           document.getElementById('modal-delete').classList.add('hidden');
         });
         document.getElementById('btn-confirm-delete').addEventListener('click', async () => {
+          if (!isAdmin) return;
           if (pendingDeleteId) {
             const targetId = pendingDeleteId;
             proposals = proposals.filter(item => item.id !== targetId);
@@ -1846,6 +2240,7 @@
         document.getElementById('btn-export-csv').addEventListener('click', exportCSV);
         document.getElementById('btn-export-json').addEventListener('click', exportJSON);
         document.getElementById('input-import-json').addEventListener('change', async (e) => {
+          if (!isAdmin) return;
           const file = e.target.files && e.target.files[0];
           if (!file) return;
           const reader = new FileReader();
@@ -1871,10 +2266,13 @@
 
       document.addEventListener('DOMContentLoaded', () => {
         proposals = loadLocalCache();
+        myProposalIds = loadMyIds();
+        isAdmin = loadAdminSession();
+        applyRoleUI();
         resetForm();
         bindEvents();
-        renderDashboard();
         renderCatalog();
+        switchTab(isAdmin ? 'dashboard' : 'tracker');
         if (window.lucide) lucide.createIcons();
         syncFromSupabase(true);
       });
