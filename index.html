@@ -103,7 +103,7 @@
           </span>
           <h2 class="text-xl sm:text-2xl font-bold tracking-tight">Ajukan & Pantau Jejak Proposal Anda ke Camat Bunta</h2>
           <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
-            Mengacu pada <strong>Perbup Banggai No. 1 Tahun 2026</strong> (22 Urusan Pemerintahan & Pasal 17–18). Demi privasi, pelacakan usulan mewajibkan kecocokan <strong>Nama Pengusul</strong> dan <strong>Desa/Kelurahan Pengusul</strong>.
+            Mengacu pada <strong>Perbup Banggai No. 1 Tahun 2026</strong> (22 Urusan Pemerintahan & Pasal 17–18). Demi privasi penuh, pelacakan hanya terbuka bagi pemilik <strong>Nomor Usulan / ID</strong> resmi yang diberikan setelah mengirim usulan.
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 shrink-0">
@@ -123,7 +123,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 class="text-base font-bold text-slate-900">Lacak Status & Disposisi Proposal Anda</h3>
-            <p class="text-xs text-slate-500 mt-0.5">Demi privasi, masukkan <strong>Nama Pengusul</strong> dan <strong>Desa/Kelurahan Pengusul</strong> yang sesuai untuk melihat status proposal Anda.</p>
+            <p class="text-xs text-slate-500 mt-0.5">Masukkan persis <strong>ID Usulan</strong> (2 huruf kecil + 1 angka, contoh: <code class="bg-slate-100 px-1.5 py-0.5 rounded">ab8</code>) yang Anda terima setelah mengirim usulan.</p>
           </div>
           <button type="button" id="btn-sync-tracker" class="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium transition-colors">
             <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
@@ -131,14 +131,10 @@
           </button>
         </div>
 
-        <form id="tracker-search-form" class="flex flex-col md:flex-row gap-2.5">
+        <form id="tracker-search-form" class="flex flex-col sm:flex-row gap-2.5">
           <div class="relative flex-1">
-            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input id="tracker-nama-input" type="text" placeholder="Nama Pengusul (contoh: Kelompok Nelayan Bahari Jaya)" class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-600" />
-          </div>
-          <div class="relative flex-1">
-            <i data-lucide="map-pin" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-            <input id="tracker-desa-input" type="text" placeholder="Desa / Kelurahan Pengusul (contoh: Desa Pongian)" class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-600" />
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input id="tracker-id-input" type="text" placeholder="Masukkan ID Usulan persis (contoh: ab8)" class="w-full pl-10 pr-4 py-2.5 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-navy-600" />
           </div>
           <button type="submit" class="px-5 py-2.5 rounded-xl bg-navy-700 hover:bg-navy-800 text-white text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 shrink-0">
             <i data-lucide="radar" class="w-4 h-4"></i>
@@ -725,15 +721,10 @@
             <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block">Nama Pengusul</span>
             <p id="success-nama-pengusul" class="text-sm font-bold text-slate-900 mt-0.5">-</p>
           </div>
-          <div class="flex items-center justify-between gap-3 pt-2 border-t border-slate-200">
-            <div>
-              <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block">Nomor Usulan (2 Digit)</span>
-              <p id="success-nomor-usulan" class="text-3xl font-extrabold font-mono text-navy-800 tracking-wider mt-0.5">01</p>
-            </div>
-            <div class="text-right">
-              <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block">Kode Tracking</span>
-              <p id="success-kode-tracking" class="text-xs font-mono font-semibold text-slate-700 bg-white px-2.5 py-1 rounded border border-slate-200 mt-1">PROP-2026-01</p>
-            </div>
+          <div class="pt-2 border-t border-slate-200">
+            <span class="text-[11px] uppercase tracking-wider font-semibold text-slate-500 block">ID Usulan (Untuk Pelacakan Privat)</span>
+            <p id="success-nomor-usulan" class="text-3xl font-extrabold font-mono text-navy-800 tracking-widest mt-0.5">ab8</p>
+            <p id="success-kode-tracking" class="hidden"></p>
           </div>
         </div>
         <div class="flex flex-wrap justify-end gap-2 pt-1">

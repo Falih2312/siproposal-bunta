@@ -321,7 +321,7 @@
 
       const INITIAL_SAMPLES = [
         {
-          id: 'PROP-2026-001',
+          id: 'kp4',
           nomorSurat: '014/KN-BAHARI/XI/2026',
           tanggal: '2026-11-12',
           jenisPengusul: 'Kelompok Tani / Nelayan / UMKM',
@@ -352,7 +352,7 @@
           updatedAt: '2026-11-18T09:30:00Z'
         },
         {
-          id: 'PROP-2026-002',
+          id: 'bt7',
           nomorSurat: '008/PHBI-BUNTA/XI/2026',
           tanggal: '2026-11-15',
           jenisPengusul: 'Lembaga Keagamaan / Pendidikan / Lainnya',
@@ -383,7 +383,7 @@
           updatedAt: '2026-11-20T14:15:00Z'
         },
         {
-          id: 'PROP-2026-003',
+          id: 'bh2',
           nomorSurat: '021/POKTAN-SM/XI/2026',
           tanggal: '2026-11-21',
           jenisPengusul: 'Kelompok Tani / Nelayan / UMKM',
@@ -424,27 +424,29 @@
       let hpNoticeShown = false;
 
       function getNomorUsulan(p) {
-        const idStr = String(p?.id || '');
-        const m = idStr.match(/(\d+)$/);
-        if (!m) return idStr;
-        const num = parseInt(m[1], 10);
-        return num < 100 ? String(num).padStart(2, '0') : String(num);
+        return String(p?.id || '');
       }
 
-      function generateNextTwoDigitId() {
-        const year = new Date().getFullYear();
-        const usedNums = new Set(
-          proposals.map(p => {
-            const m = String(p.id || '').match(/(\d+)$/);
-            return m ? parseInt(m[1], 10) : null;
-          }).filter(n => n !== null && !Number.isNaN(n))
-        );
-        let next = 1;
-        while (usedNums.has(next) && next <= 9999) {
-          next++;
+      function getNomorUsulanDisplay(p) {
+        return String(p?.id || '');
+      }
+
+      function generateRandomTrackingId() {
+        const letters = 'abcdefghijklmnopqrstuvwxyz';
+        const digits = '0123456789';
+        const existing = new Set(proposals.map(p => String(p.id || '').toLowerCase()));
+        for (let attempt = 0; attempt < 500; attempt++) {
+          const code =
+            letters[Math.floor(Math.random() * letters.length)] +
+            letters[Math.floor(Math.random() * letters.length)] +
+            digits[Math.floor(Math.random() * digits.length)];
+          if (!existing.has(code)) return code;
         }
-        const twoDigit = String(next).padStart(2, '0');
-        return `PROP-${year}-${twoDigit}`;
+        return (
+          letters[Math.floor(Math.random() * letters.length)] +
+          letters[Math.floor(Math.random() * letters.length)] +
+          digits[Math.floor(Math.random() * digits.length)]
+        );
       }
 
       function loadMyIds() {
@@ -741,8 +743,7 @@
             <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
               <div class="space-y-1">
                 <div class="flex flex-wrap items-center gap-2">
-                  <span class="px-2.5 py-0.5 rounded bg-navy-700 text-white font-mono text-xs font-bold">No. Usulan: ${escapeHtml(getNomorUsulan(p))}</span>
-                  <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-xs font-semibold">${escapeHtml(p.id)}</span>
+                  <span class="px-2.5 py-0.5 rounded bg-navy-700 text-white text-xs font-bold">${escapeHtml(getNomorUsulanDisplay(p))}</span>
                   <span class="text-xs text-slate-500">No. Surat: <strong>${escapeHtml(p.nomorSurat)}</strong></span>
                   <span class="text-xs text-slate-500">• ${formatTanggal(p.tanggal)}</span>
                 </div>
@@ -793,7 +794,7 @@
         if (mine.length === 0) {
           listEl.innerHTML = `
             <div class="p-8 text-center text-xs sm:text-sm text-slate-500">
-              Belum ada usulan yang dikirim dari perangkat ini. Gunakan kotak pencarian di atas dengan memasukkan <strong>Nama Pengusul</strong> dan <strong>Desa/Kelurahan Pengusul</strong> yang sama.
+              Belum ada usulan yang dikirim dari perangkat ini. Gunakan kotak pencarian di atas dengan memasukkan persis <strong>Nomor Usulan / ID</strong> yang Anda terima setelah mengirim usulan.
             </div>
           `;
           return;
@@ -805,28 +806,26 @@
 
       function handleTrackerSearch(e) {
         e.preventDefault();
-        const namaRaw = (document.getElementById('tracker-nama-input').value || '').trim();
-        const desaRaw = (document.getElementById('tracker-desa-input').value || '').trim();
-        const namaQ = namaRaw.toLowerCase();
-        const desaQ = desaRaw.toLowerCase();
+        const idRaw = (document.getElementById('tracker-id-input').value || '').trim();
+        const idQ = idRaw.toLowerCase().replace(/\s+/g, ' ');
         const resultBox = document.getElementById('tracker-search-result');
 
-        if (!namaQ || !desaQ) {
+        if (!idQ) {
           resultBox.classList.add('hidden');
-          showToast('Masukkan Nama Pengusul dan Desa/Kelurahan Pengusul terlebih dahulu.', 'error');
+          showToast('Masukkan Nomor Usulan / ID Anda terlebih dahulu.', 'error');
           return;
         }
 
-        const matches = proposals.filter(p =>
-          (p.namaPengusul || '').toLowerCase().includes(namaQ) &&
-          (p.wilayah || '').toLowerCase().includes(desaQ)
-        );
+        const matches = proposals.filter(p => {
+          const fullId = (p.id || '').toLowerCase().trim();
+          return fullId === idQ;
+        });
 
         resultBox.classList.remove('hidden');
         if (matches.length === 0) {
           resultBox.innerHTML = `
             <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600">
-              Tidak ditemukan proposal dengan Nama Pengusul <strong>"${escapeHtml(namaRaw)}"</strong> dan Desa/Kelurahan <strong>"${escapeHtml(desaRaw)}"</strong>. Pastikan keduanya cocok dengan data saat pengajuan.
+              Tidak ditemukan proposal dengan Nomor Usulan / ID <strong>"${escapeHtml(idRaw)}"</strong>. Pastikan Anda memasukkan ID persis seperti yang diberikan setelah pengajuan.
             </div>
           `;
           return;
@@ -986,11 +985,8 @@
         return `
           <tr class="hover:bg-slate-50/80 transition-colors">
             <td class="py-3.5 px-4 align-top whitespace-nowrap">
-              <div class="flex items-center gap-1.5">
-                <span class="px-1.5 py-0.5 rounded bg-navy-700 text-white font-mono text-[11px] font-bold">No. ${escapeHtml(noUsulan)}</span>
-                <span class="font-mono text-[11px] font-semibold text-navy-700">${escapeHtml(p.id)}</span>
-              </div>
-              <div class="font-semibold text-slate-900 text-xs mt-0.5">${escapeHtml(p.nomorSurat)}</div>
+              <div class="inline-block px-2 py-0.5 rounded bg-navy-700 text-white text-[11px] font-bold">${escapeHtml(getNomorUsulanDisplay(p))}</div>
+              <div class="font-semibold text-slate-900 text-xs mt-1">${escapeHtml(p.nomorSurat)}</div>
               <div class="text-xs text-slate-500 mt-0.5">${formatTanggal(p.tanggal)}</div>
             </td>
             <td class="py-3.5 px-4 align-top">
@@ -1293,7 +1289,7 @@
           beritaAcaraMusdes: document.getElementById('lamp-beritaAcaraMusdes').checked
         };
 
-        const generatedId = existingId || generateNextTwoDigitId();
+        const generatedId = existingId || generateRandomTrackingId();
         const payload = {
           id: generatedId,
           nomorSurat: nomor,
@@ -1344,10 +1340,10 @@
           showToast(`Proposal disimpan! Nomor Usulan: ${getNomorUsulan(payload)}`);
         }
 
-        const noUsulan = getNomorUsulan(payload);
+        const noUsulanDisplay = getNomorUsulanDisplay(payload);
         document.getElementById('success-modal-title').textContent = targetStatus === 'Draft' ? 'Draft Usulan Disimpan' : 'Usulan Berhasil Diajukan!';
-        document.getElementById('success-nama-pengusul').textContent = `${payload.namaPengusul} (${payload.wilayah})`;
-        document.getElementById('success-nomor-usulan').textContent = noUsulan;
+        document.getElementById('success-nama-pengusul').textContent = payload.namaPengusul;
+        document.getElementById('success-nomor-usulan').textContent = noUsulanDisplay;
         document.getElementById('success-kode-tracking').textContent = payload.id;
         document.getElementById('modal-submit-success').classList.remove('hidden');
 
